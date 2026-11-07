@@ -1,10 +1,13 @@
 {
-  "name": "جحيم المزعج - HELL OF ALMOZAG",
-  "short_name": "جحيم المزعج",
-  "description": "لعبة رعب بدون نت | 4 ملفات ملعونة | اصوات رعب وصرخات | HACKER X",
-  "start_url": "./index.html",
+  "name": "HELL OF ALMOZAG",
+  "short_name": "ALMOZAG",
+  "start_url": "/hell-of-almozag/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#ff0000",
-  "orientation": "portrait"
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "orientation": "landscape",
+  "icons": [
+    {"src": "https://cdn-icons-png.flaticon.com/512/744/744762.png","sizes": "192x192","type": "image/png"},
+    {"src": "https://cdn-icons-png.flaticon.com/512/744/744762.png","sizes": "512x512","type": "image/png"}
+  ]
 }
