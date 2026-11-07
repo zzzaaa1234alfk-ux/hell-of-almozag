@@ -7,245 +7,177 @@
 <link rel="manifest" href="manifest.json">
 <title>HELL OF ALMOZAG</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050505;color:#fff;font-family:Arial,sans-serif;touch-action:none}
-#stage{position:fixed;inset:0;width:100vw;height:100dvh;overflow:hidden;background:#050505}
-@media (orientation:portrait){
- body.playing #stage{
-  width:100dvh !important;height:100vw !important;left:0;top:0;right:auto;bottom:auto;
-  transform-origin:top left;
-  transform:rotate(90deg) translateY(-100%) !important;
- }
- body.playing #rotateNotice{display:flex !important}
-}
-#game{position:fixed;inset:0}canvas{display:block}
-#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse,transparent 35%,rgba(0,0,0,.72) 100%);z-index:2}
-#hud{position:fixed;inset:0;z-index:5;pointer-events:none}
-#brand{position:absolute;top:12px;left:12px;color:#f22;font-weight:bold;letter-spacing:2px;text-shadow:0 0 12px red;font-size:13px}
-#objective{position:absolute;top:12px;right:12px;background:#080808c9;border:1px solid #7b1010;border-radius:10px;padding:9px 12px;font-size:13px;max-width:65%;line-height:1.5}
-#status{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#080808b8;border:1px solid #444;border-radius:20px;padding:7px 13px;font-size:12px;white-space:nowrap}
-#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:20px;color:#ddd;text-shadow:0 0 8px #fff}
-#message{position:absolute;top:24%;left:50%;transform:translateX(-50%);width:90%;text-align:center;color:#fff;font-size:17px;text-shadow:0 2px 8px #000;opacity:0;transition:opacity .2s}
-#start,#end{position:fixed;inset:0;z-index:10;background:linear-gradient(#000b,#000e),radial-gradient(ellipse at center,#3b0505,#050505 65%);display:flex;align-items:center;justify-content:center;padding:22px;text-align:center}
-.panel{width:min(440px,100%);background:#090909ed;border:1px solid #8d1010;border-radius:18px;padding:25px 20px;box-shadow:0 0 35px #7004}
-h1{color:#f22;margin:0 0 8px;font-size:30px;text-shadow:0 0 18px red}
-p{color:#bbb;line-height:1.7;font-size:14px}
-.mainbtn{border:0;border-radius:12px;background:#e00000;color:white;padding:15px 22px;font-size:18px;font-weight:bold;width:100%;margin-top:12px}
-#controls{position:fixed;inset:0;z-index:6;pointer-events:none;display:none}
-#rotateNotice{display:none;position:fixed;inset:0;z-index:20;background:#030303f5;align-items:center;justify-content:center;padding:24px;text-align:center}
-.rotateCard{max-width:340px;border:1px solid #9b1111;background:#100707;border-radius:18px;padding:25px;box-shadow:0 0 28px #9005}
-#stickBase{position:absolute;bottom:28px;left:22px;width:112px;height:112px;border:2px solid #ffffff55;background:#1118;border-radius:50%;pointer-events:auto}
-#stick{position:absolute;width:46px;height:46px;left:31px;top:31px;border-radius:50%;background:#d71919cc;border:2px solid #ff7777}
-#lookArea{position:absolute;right:0;top:25%;width:58%;height:65%;pointer-events:auto}
-.action{position:absolute;right:18px;bottom:30px;width:62px;height:62px;border-radius:50%;border:1px solid #ff5555;background:#240606dd;color:white;font-size:12px;pointer-events:auto}
-#lightBtn{right:92px;bottom:102px}
-#runBtn{right:92px;bottom:28px}
-#soundBtn{position:absolute;top:58px;left:12px;pointer-events:auto;background:#111d;color:white;border:1px solid #555;border-radius:9px;padding:8px 10px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial,sans-serif;touch-action:none;user-select:none}
+#stage{position:fixed;inset:0;width:100vw;height:100dvh;overflow:hidden;background:#000}
+/* الممر - صورة حقيقية زي التجريبية */
+#corridor{position:absolute;left:50%;top:50%;width:160%;height:160%;transform:translate(-50%,-50%);background-image:url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=1800&auto=format&fit=crop');background-size:cover;background-position:center;transition:transform .08s linear;filter:brightness(.75) contrast(1.15) saturate(.8)}
+#dark{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 28%,rgba(0,0,0,.85) 78%,#000 100%);pointer-events:none;z-index:2}
+#flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,rgba(255,240,200,.22) 0%,transparent 42%);mix-blend-mode:screen;pointer-events:none;z-index:3}
+#redGlow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(255,0,0,.18),transparent 55%);pointer-events:none;z-index:3}
+/* HUD زي الصورة */
+#hud{position:absolute;inset:0;z-index:10;pointer-events:none}
+#brand{position:absolute;top:12px;left:14px;color:#ff1a1a;font-weight:900;font-size:26px;letter-spacing:1px;text-shadow:0 0 14px #f00,0 2px 0 #000}
+#objective{position:absolute;top:10px;right:12px;background:rgba(8,8,10,.88);border:1px solid #ff2a2a;border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.5;text-align:right;min-width:210px}
+#objective b{color:#ff6b6b}
+#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:28px;color:#fff;text-shadow:0 0 10px #fff;z-index:11}
+#status{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(10,10,12,.9);border:1px solid #555;border-radius:12px;padding:10px 20px;font-size:16px;white-space:nowrap}
+#msg{position:absolute;top:26%;left:50%;transform:translateX(-50%);width:90%;text-align:center;font-size:18px;text-shadow:0 2px 10px #000;opacity:0;transition:.2s;z-index:12}
+/* المفتاح والوحش */
+#key{position:absolute;left:62%;top:58%;width:64px;height:64px;z-index:6;display:none;filter:drop-shadow(0 0 18px gold);font-size:52px;text-align:center;animation:float 1.2s infinite alternate}
+@keyframes float{from{transform:translateY(0) scale(1)}to{transform:translateY(-10px) scale(1.12)}}
+#monster{position:absolute;left:50%;top:32%;width:170px;height:280px;z-index:7;display:none;text-align:center;filter:drop-shadow(0 0 20px #f00)}
+#monster .face{font-size:120px;line-height:1;text-shadow:0 0 30px #000}
+#monster .eyes{color:#f00;font-size:22px;letter-spacing:18px;font-weight:bold;text-shadow:0 0 12px red}
+/* Controls */
+#controls{position:absolute;inset:0;z-index:20;pointer-events:none;display:none}
+#stickBase{position:absolute;bottom:22px;left:20px;width:118px;height:118px;border:2px solid rgba(255,40,40,.9);background:rgba(0,0,0,.35);border-radius:50%;pointer-events:auto;box-shadow:0 0 20px rgba(255,0,0,.4)}
+#stick{position:absolute;width:50px;height:50px;left:32px;top:32px;border-radius:50%;background:radial-gradient(circle,#ff5555,#8b0000);border:2px solid #ff8888;box-shadow:0 0 16px red}
+.action{position:absolute;right:16px;width:72px;height:72px;border-radius:50%;border:2px solid #ff4444;background:rgba(40,0,0,.85);color:#fff;font-size:14px;font-weight:bold;pointer-events:auto;box-shadow:0 0 16px rgba(255,0,0,.5)}
+#lightBtn{bottom:104px;right:16px}
+#runBtn{bottom:20px;right:16px}
+#useBtn{bottom:20px;right:100px;background:#d40000}
+#soundBtn{position:absolute;top:62px;left:12px;pointer-events:auto;background:#111d;color:#fff;border:1px solid #666;border-radius:10px;padding:9px 12px;font-size:13px}
+/* شاشة البداية */
+#start,#end{position:fixed;inset:0;z-index:40;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.9)),url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=1200&auto=format&fit=crop');background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+.panel{width:min(440px,100%);background:rgba(5,5,5,.92);border:1px solid #a00;border-radius:18px;padding:26px 20px;box-shadow:0 0 40px #9008}
+.panel h1{color:#f22;font-size:32px;text-shadow:0 0 20px red;margin-bottom:10px}
+.panel p{color:#ccc;line-height:1.7;font-size:14px}
+.mainbtn{border:0;border-radius:12px;background:#e00000;color:#fff;padding:16px;font-size:19px;font-weight:bold;width:100%;margin-top:14px}
+#rotateNotice{display:none;position:fixed;inset:0;z-index:60;background:#030303f5;align-items:center;justify-content:center;padding:24px;text-align:center}
+.rotateCard{max-width:340px;border:1px solid #a00;background:#100707;border-radius:18px;padding:26px}
 #end{display:none}
-@media (orientation:landscape) and (max-width:900px){
- #objective{top:10px;right:12px;max-width:48%;font-size:12px}
- #brand{top:12px;font-size:12px}
- #status{bottom:10px;font-size:11px}
- #stickBase{width:100px;height:100px;left:18px;bottom:16px}
- #stick{left:27px;top:27px}
- #lightBtn{right:18px;bottom:92px}
- #runBtn{right:18px;bottom:18px}
- #lookArea{top:12%;height:72%;width:58%}
-}
-@media(min-width:901px){#stickBase,#lookArea,.action{display:none}#controls{display:block}#status:after{content:" | WASD للحركة • الماوس للنظر • E للتفاعل"}}
 </style>
 </head>
 <body>
 <div id="stage">
-<div id="game"></div><div id="vignette"></div>
-<div id="hud">
- <div id="brand">HELL OF ALMOZAG</div>
- <div id="objective">المهمة: ابحث عن المفتاح الأحمر وافتح باب الخروج.</div>
- <div id="crosshair">+</div><div id="message"></div>
- <div id="status">المفتاح: 0/1</div>
+  <div id="corridor"></div>
+  <div id="dark"></div><div id="redGlow"></div><div id="flash"></div>
+  <div id="key">🔑</div>
+  <div id="monster"><div class="face">👤</div><div class="eyes">● ●</div><div style="margin-top:6px;color:#f00;font-weight:bold">اهرب!</div></div>
+  <div id="hud">
+    <div id="brand">HELL OF ALMOZAG</div>
+    <div id="objective"><b>المهمة:</b><br>ابحث عن المفتاح الأحمر<br>وافتح باب الخروج</div>
+    <div id="crosshair">+</div>
+    <div id="msg"></div>
+    <div id="status">🔑 المفتاح: 0/1 &nbsp;|&nbsp; المسافة: 100m</div>
+  </div>
+  <div id="controls">
+    <div id="stickBase"><div id="stick"></div></div>
+    <button id="lightBtn" class="action">🔦<br>الكشاف</button>
+    <button id="runBtn" class="action">🏃<br>جري</button>
+    <button id="useBtn" class="action">✋<br>خد / افتح</button>
+    <button id="soundBtn">الصوت: مغلق</button>
+  </div>
 </div>
-<div id="controls">
- <div id="stickBase"><div id="stick"></div></div>
- <div id="lookArea"></div>
- <button id="lightBtn" class="action">الكشاف</button>
- <button id="runBtn" class="action">جري</button>
- <button id="soundBtn">الصوت: مغلق</button>
-</div>
-<div id="rotateNotice"><div class="rotateCard">
-  <div style="font-size:54px">📱 ↻</div>
-  <h2>لف الموبايل بالعرض</h2>
-  <p>اللعبة مصممة للعب بالعرض. لف جهازك للوضع الأفقي عشان تكمل.</p>
-</div></div>
+
+<div id="rotateNotice"><div class="rotateCard"><div style="font-size:54px">📱 ↻</div><h2>لف الموبايل بالعرض</h2><p>اللعبة بتشتغل بالعرض بس. لف موبايلك دلوقتي.</p></div></div>
+
 <div id="start"><div class="panel">
- <h1>💀 HELL OF ALMOZAG</h1>
- <p>استيقظت داخل مبنى مهجور عند الساعة الثالثة فجرًا. اعثر على المفتاح وافتح باب الخروج… لكن لا تدع الشيء الذي يتجول في الظلام يقترب منك.</p>
- <p>على الهاتف: استخدم العصا للحركة واسحب يمين الشاشة للنظر. على الكمبيوتر: WASD والماوس.</p>
- <button class="mainbtn" id="startBtn">ابدأ الكابوس</button>
- <p style="font-size:11px">لعبة خيالية. يفضّل استخدام سماعات الصوت بمستوى منخفض.</p>
+  <h1>💀 HELL OF ALMOZAG</h1>
+  <p>استيقظت داخل مبنى مهجور الساعة 3 الفجر. دور على المفتاح وافتح باب الخروج… بس خلي بالك من اللي بيمشي في الضلمة.</p>
+  <p>العصا على الشمال للحركة، اسحب يمين الشاشة للنظر، ودوس <b>خد / افتح</b> لما تقرب من المفتاح أو الباب.</p>
+  <button class="mainbtn" id="startBtn">ابدأ الكابوس</button>
+  <p style="font-size:11px">لازم تثبت اللعبة وتفتحها من الأيقونة عشان تشتغل بالعرض مظبوط.</p>
 </div></div>
-<div id="end"><div class="panel"><h1 id="endTitle">انتهت اللعبة</h1><p id="endText"></p><button class="mainbtn" onclick="location.reload()">العب من جديد</button></div></div>
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 
-const mount=document.getElementById("game");
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x030303);scene.fog=new THREE.FogExp2(0x050505,.047);
-const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,90);
-camera.position.set(0,1.65,8);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
-function resizeGame(){
- const r=document.getElementById("stage").getBoundingClientRect();
- const w=Math.max(1,r.width),h=Math.max(1,r.height);
- renderer.setSize(w,h,false);
- camera.aspect=w/h;camera.updateProjectionMatrix();
-}
-renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
-mount.appendChild(renderer.domElement);
+<div id="end"><div class="panel"><h1 id="endTitle">انتهت</h1><p id="endText"></p><button class="mainbtn" onclick="location.reload()">العب من جديد</button></div></div>
 
-scene.add(new THREE.HemisphereLight(0x536070,0x100606,.42));
-const ambient=new THREE.AmbientLight(0x28303b,.22);scene.add(ambient);
-const redLight=new THREE.PointLight(0xaa0808,2.2,13);redLight.position.set(0,2.6,-5);scene.add(redLight);
-const flashlight=new THREE.SpotLight(0xe2edff,32,22,Math.PI/7,.55,1.4);
-camera.add(flashlight);flashlight.position.set(0,0,0);flashlight.target.position.set(0,0,-1);camera.add(flashlight.target);scene.add(camera);
-const mats={
- wall:new THREE.MeshStandardMaterial({color:0x29292b,roughness:.95}),
- floor:new THREE.MeshStandardMaterial({color:0x171719,roughness:1}),
- ceiling:new THREE.MeshStandardMaterial({color:0x101012,roughness:1}),
- trim:new THREE.MeshStandardMaterial({color:0x480b0b,roughness:.8}),
- door:new THREE.MeshStandardMaterial({color:0x301414,roughness:.8}),
-};
-function box(x,y,z,w,h,d,mat,cast=true){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;scene.add(m);return m;
-}
-box(0,-.15,-5,9,.3,38,mats.floor,false);
-box(0,3.25,-5,9,.3,38,mats.ceiling,false);
-box(-4.5,1.5,-5,.3,3,38,mats.wall);
-box(4.5,1.5,-5,.3,3,38,mats.wall);
-box(0,1.5,13,9,3,.3,mats.wall);
-box(0,1.5,-23,9,3,.3,mats.wall);
-for(const z of [-1,-8,-15]){box(-2.85,1.5,z,3.3,3,.35,mats.wall);box(2.85,1.5,z,3.3,3,.35,mats.wall);}
-for(const z of [-4,-11,-18]){box(-2.7,1.5,z,3.6,3,.3,mats.wall);box(2.7,1.5,z,3.6,3,.3,mats.wall);}
-for(let z=10;z>-22;z-=5){
- const lamp=new THREE.PointLight(0x9aa5b8,.45,7);lamp.position.set(0,2.75,z);scene.add(lamp);
- const fixture=box(0,3.02,z,.65,.08,.35,new THREE.MeshStandardMaterial({color:0x777777,emissive:0x222222}),false);
-}
-for(let z=9;z>-22;z-=3){box(-4.25,2.65,z,.12,.12,2.4,mats.trim,false);box(4.25,2.65,z,.12,.12,2.4,mats.trim,false);}
-const crateMat=new THREE.MeshStandardMaterial({color:0x29201b,roughness:1});
-box(-2.9,.55,4,1.2,1.1,1.2,crateMat);box(2.8,.45,-10,1.1,.9,1.1,crateMat);box(-2.8,.6,-17,1.3,1.2,1.3,crateMat);
-const exitDoor=box(0,1.45,-21.9,2.3,2.8,.25,mats.door);
-const exitGlow=new THREE.PointLight(0xff0909,1.8,5);exitGlow.position.set(0,2,-21);scene.add(exitGlow);
-box(-2.6,.35,-13, .7,.7,.7,crateMat);
-const key=new THREE.Group();
-const ring=new THREE.Mesh(new THREE.TorusGeometry(.19,.055,8,18),new THREE.MeshStandardMaterial({color:0xffbf35,metalness:.7,roughness:.3}));
-key.add(ring);const shaft=new THREE.Mesh(new THREE.BoxGeometry(.08,.48,.08),new THREE.MeshStandardMaterial({color:0xffbf35,metalness:.7}));shaft.position.y=-.28;key.add(shaft);
-key.position.set(-2.6,1.05,-13);scene.add(key);
-const keyLight=new THREE.PointLight(0xffa51b,1.4,3);keyLight.position.copy(key.position);scene.add(keyLight);
-const monster=new THREE.Group();
-const dark=new THREE.MeshStandardMaterial({color:0x050506,roughness:1});
-const body=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.95,5,8),dark);body.position.y=1.05;monster.add(body);
-const head=new THREE.Mesh(new THREE.SphereGeometry(.34,12,10),dark);head.position.y=1.9;monster.add(head);
-for(const x of [-.13,.13]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.045,8,8),new THREE.MeshBasicMaterial({color:0xff1717}));eye.position.set(x,1.95,-.29);monster.add(eye);}
-monster.position.set(2.7,0,-18);scene.add(monster);
-const monsterLamp=new THREE.PointLight(0x8b0000,.8,3);monster.add(monsterLamp);monsterLamp.position.set(0,1.8,0);
-
+<script>
 let started=false,hasKey=false,ended=false,flashOn=true,run=false;
-let yaw=0,pitch=0,moveX=0,moveY=0,joyId=null,lastTouch=null;
-const keys={};
-function msg(t){const el=document.getElementById("message");el.textContent=t;el.style.opacity=1;clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.style.opacity=0,2100);}
-function endGame(win){if(ended)return;ended=true;document.getElementById("end").style.display="flex";document.getElementById("endTitle").textContent=win?"نجوت من الجحيم 👑":"لقد أمسك بك الظل";document.getElementById("endText").textContent=win?"وجدت طريق الخروج ونجوت من المبنى المهجور.":"انتهت محاولتك هذه المرة. حاول مرة أخرى وابحث عن المفتاح.";}
-function setFlash(){flashOn=!flashOn;flashlight.visible=flashOn;document.getElementById("lightBtn").textContent=flashOn?"الكشاف: ON":"الكشاف: OFF";}
-document.getElementById("lightBtn").addEventListener("click",setFlash);
-document.getElementById("runBtn").addEventListener("touchstart",e=>{e.preventDefault();run=true;});
-document.getElementById("runBtn").addEventListener("touchend",()=>run=false);
-document.getElementById("runBtn").addEventListener("mousedown",()=>run=true);
-document.getElementById("runBtn").addEventListener("mouseup",()=>run=false);
+let px=0,py=0,moveX=0,moveY=0,dist=100,monsterDist=90;
+const corridor=document.getElementById('corridor');
+const msgEl=document.getElementById('msg');
+function msg(t){msgEl.textContent=t;msgEl.style.opacity=1;setTimeout(()=>msgEl.style.opacity=0,2200);}
+function endGame(win){
+ if(ended)return;ended=true;
+ document.getElementById('end').style.display='flex';
+ document.getElementById('endTitle').textContent=win?'نجوت من الجحيم 👑':'مسكك الظل 💀';
+ document.getElementById('endText').textContent=win?'لقيت المفتاح وفتحت باب الخروج وهربت.':'الوحش مسكك. حاول تاني وخليك أسرع.';
+}
+function update(){
+ // تحريك الخلفية زي المشي الحقيقي
+ const scale=1.6 + (100-dist)/100 * 0.6;
+ corridor.style.transform=`translate(calc(-50% + ${-px*18}px), calc(-50% + ${-py*12}px)) scale(${scale})`;
+ document.getElementById('status').textContent=`🔑 المفتاح: ${hasKey?'1/1':'0/1'} | المسافة: ${Math.max(0,Math.round(dist))}m ${hasKey?'| ارجع للباب':''}`;
+ // المفتاح يظهر لما تقرب
+ const keyEl=document.getElementById('key');
+ if(!hasKey && dist<18){keyEl.style.display='block';keyEl.style.left=(50+px*0.5+18)+'%';keyEl.style.top=(58-py*0.3)+'%';}
+ else keyEl.style.display='none';
+ // الوحش يظهر بعد ما تاخد المفتاح
+ const m=document.getElementById('monster');
+ if(hasKey){
+   monsterDist-=0.18+(run?0.05:0);
+   if(monsterDist<38){m.style.display='block';let s=1+(38-monsterDist)/22;m.style.transform=`scale(${s})`;m.style.left=(50+Math.sin(Date.now()/400)*6)+'%';}
+   else m.style.display='none';
+   if(monsterDist<=8) endGame(false);
+ }
+}
 function interact(){
  if(!started||ended)return;
- const p=camera.position;
- if(!hasKey&&p.distanceTo(key.position)<2.2){hasKey=true;scene.remove(key);scene.remove(keyLight);document.getElementById("status").textContent="المفتاح: 1/1";document.getElementById("objective").textContent="المهمة: وصلت للمفتاح! ارجع إلى باب الخروج.";msg("حصلت على المفتاح… ارجع لباب الخروج!");return;}
- if(p.distanceTo(exitDoor.position)<2.7){
-  if(hasKey)endGame(true);else msg("الباب مقفول… دور على المفتاح الأحمر أولًا.");
- }else msg("لا يوجد شيء يمكن استخدامه هنا.");
+ if(!hasKey && dist<18){hasKey=true;msg('خدت المفتاح! اجري للباب! الوحش صحي!');monsterDist=42;return;}
+ if(hasKey && dist>82){endGame(true);return;}
+ if(!hasKey) msg('لسه بعيد… قرب أكتر من المفتاح');
+ else msg('ارجع للباب، المسافة بقت '+Math.round(100-dist)+'m من 100m');
 }
-addEventListener("keydown",e=>{keys[e.code]=true;if(e.code==="KeyE")interact();if(e.code==="KeyF")setFlash();});
-addEventListener("keyup",e=>{keys[e.code]=false;});
-renderer.domElement.addEventListener("click",()=>{if(started&&innerWidth>800)renderer.domElement.requestPointerLock?.();});
-addEventListener("mousemove",e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.25,Math.min(1.25,pitch));}});
-const base=document.getElementById("stickBase"),stick=document.getElementById("stick");
-base.addEventListener("pointerdown",e=>{joyId=e.pointerId;base.setPointerCapture(joyId);joy(e);});
-base.addEventListener("pointermove",e=>{if(e.pointerId===joyId)joy(e);});
-function joy(e){const r=base.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const len=Math.hypot(dx,dy),max=38;if(len>max){dx=dx/len*max;dy=dy/len*max;}moveX=dx/max;moveY=dy/max;stick.style.transform=`translate(${dx}px,${dy}px)`;}
-function stopJoy(e){if(e.pointerId===joyId){joyId=null;moveX=moveY=0;stick.style.transform="";}}
-base.addEventListener("pointerup",stopJoy);base.addEventListener("pointercancel",stopJoy);
-const look=document.getElementById("lookArea");
-look.addEventListener("pointerdown",e=>{lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};look.setPointerCapture(e.pointerId);});
-look.addEventListener("pointermove",e=>{if(!lastTouch||lastTouch.id!==e.pointerId)return;const dx=e.clientX-lastTouch.x,dy=e.clientY-lastTouch.y;lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};yaw-=dx*.005;pitch-=dy*.004;pitch=Math.max(-1.25,Math.min(1.25,pitch));});
-look.addEventListener("pointerup",()=>lastTouch=null);look.addEventListener("pointercancel",()=>lastTouch=null);
-document.getElementById("soundBtn").addEventListener("click",()=>{document.getElementById("soundBtn").textContent="الصوت: مؤثرات بسيطة";msg("الصوت المحيطي غير مفعل في هذه النسخة التجريبية.");});
+document.getElementById('useBtn').addEventListener('click',interact);
+document.getElementById('lightBtn').addEventListener('click',()=>{
+ flashOn=!flashOn;document.getElementById('flash').style.display=flashOn?'block':'none';
+ document.getElementById('lightBtn').innerHTML=flashOn?'🔦<br>الكشاف':'🌑<br>مطفي';
+});
+let runHold=false;
+const runBtn=document.getElementById('runBtn');
+runBtn.addEventListener('touchstart',e=>{e.preventDefault();run=true;});
+runBtn.addEventListener('touchend',()=>run=false);
+runBtn.addEventListener('mousedown',()=>run=true);
+runBtn.addEventListener('mouseup',()=>run=false);
+document.getElementById('soundBtn').addEventListener('click',()=>msg('شغل صوت الموبايل عالي، جو اللعبة مرعب'));
+
+// عصا
+const base=document.getElementById('stickBase'),stick=document.getElementById('stick');
+let joyId=null;
+base.addEventListener('pointerdown',e=>{joyId=e.pointerId;base.setPointerCapture(joyId);joy(e);});
+base.addEventListener('pointermove',e=>{if(e.pointerId===joyId)joy(e);});
+function joy(e){
+ const r=base.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+ let dx=e.clientX-cx,dy=e.clientY-cy;const len=Math.hypot(dx,dy),max=38;
+ if(len>max){dx=dx/len*max;dy=dy/len*max;}
+ moveX=dx/max;moveY=dy/max;stick.style.transform=`translate(${dx}px,${dy}px)`;
+}
+function stopJoy(e){if(e.pointerId===joyId){joyId=null;moveX=moveY=0;stick.style.transform='';}}
+base.addEventListener('pointerup',stopJoy);base.addEventListener('pointercancel',stopJoy);
+// النظر - سحب يمين الشاشة
+let lastLook=null;
+document.getElementById('stage').addEventListener('pointerdown',e=>{if(e.clientX>innerWidth*0.45) lastLook={x:e.clientX,y:e.clientY};});
+addEventListener('pointermove',e=>{if(!lastLook)return;px+= (e.clientX-lastLook.x)*0.04;py+=(e.clientY-lastLook.y)*0.03;px=Math.max(-28,Math.min(28,px));py=Math.max(-18,Math.min(18,py));lastLook={x:e.clientX,y:e.clientY};});
+addEventListener('pointerup',()=>lastLook=null);
 
 async function startGameNow(){
- started=true;
- document.body.classList.add("playing");
- document.getElementById("start").style.display="none";
- document.getElementById("controls").style.display="block";
- document.getElementById("rotateNotice").style.display="none";
- try{ if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); }catch(e){}
- try{ if(screen.orientation && screen.orientation.lock) await screen.orientation.lock("landscape"); }catch(e){}
- if(innerWidth>900)renderer.domElement.requestPointerLock?.();
- msg("ابحث عن المفتاح الذهبي… وانتبه للظل.");
+ started=true;document.getElementById('start').style.display='none';
+ document.getElementById('controls').style.display='block';
+ document.getElementById('rotateNotice').style.display='none';
+ try{if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();}catch(e){}
+ try{if(screen.orientation&&screen.orientation.lock) await screen.orientation.lock('landscape');}catch(e){}
+ msg('امشي بالعصا… دور على المفتاح الذهبي');
 }
-
-document.getElementById("startBtn").addEventListener("click",()=>{
- if(window.innerHeight > window.innerWidth){
-   document.getElementById("rotateNotice").style.display="flex";
-   document.getElementById("rotateNotice").innerHTML='<div class="rotateCard"><div style="font-size:54px">📱 ↻</div><h2>لف الموبايل بالعرض</h2><p>لف موبايلك دلوقتي عشان اللعبة تفتح بالعرض</p></div>';
-   let check=setInterval(()=>{
-     if(window.innerWidth > window.innerHeight){
-       clearInterval(check);
-       startGameNow();
-     }
-   },400);
-   return;
+document.getElementById('startBtn').addEventListener('click',()=>{
+ if(window.innerHeight>window.innerWidth){
+  document.getElementById('rotateNotice').style.display='flex';
+  let check=setInterval(()=>{if(window.innerWidth>window.innerHeight){clearInterval(check);startGameNow();}},400);
+  return;
  }
  startGameNow();
 });
-
-function blocked(x,z){
- if(x< -4||x>4||z< -22.5||z>12.5)return true;
- const obstacles=[[-2.9,4,.85],[2.8,-10,.8],[-2.8,-17,.9]];
- return obstacles.some(([ox,oz,r])=>Math.hypot(x-ox,z-oz)<r+.35);
-}
-const clock=new THREE.Clock();
-function animate(){
- requestAnimationFrame(animate);
- const dt=Math.min(clock.getDelta(),.04);
- if(started&&!ended){
-  const forward=(keys.KeyW||keys.ArrowUp?-1:0)+(keys.KeyS||keys.ArrowDown?1:0)-moveY;
-  const side=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+moveX;
-  const speed=(run||keys.ShiftLeft?4.1:2.35)*dt;
-  const dx=(Math.sin(yaw)*(-forward)+Math.cos(yaw)*side)*speed;
-  const dz=(Math.cos(yaw)*forward-Math.sin(yaw)*side)*speed;
-  const nx=camera.position.x+dx,nz=camera.position.z+dz;
-  if(!blocked(nx,camera.position.z))camera.position.x=nx;
-  if(!blocked(camera.position.x,nz))camera.position.z=nz;
-  camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch;
-  if(hasKey){
-   const dxp=camera.position.x-monster.position.x,dzp=camera.position.z-monster.position.z;
-   const dist=Math.hypot(dxp,dzp);
-   if(dist>0.001){monster.position.x+=(dxp/dist)*dt*1.05;monster.position.z+=(dzp/dist)*dt*1.05;}
-   monster.lookAt(camera.position.x,1,camera.position.z);
-   if(dist<1.15)endGame(false);
-  }
-  key.rotation.y+=dt*1.5;key.position.y=1.05+Math.sin(performance.now()*.002)*.08;keyLight.position.copy(key.position);
-  redLight.intensity=1.7+Math.sin(performance.now()*.004)*.55;
- }
- renderer.render(scene,camera);
-}
-animate();
-addEventListener("resize",()=>{setTimeout(resizeGame,80);});
-addEventListener("orientationchange",()=>{setTimeout(resizeGame,180);});
-setTimeout(resizeGame,250);
+setInterval(()=>{
+ if(!started||ended)return;
+ if(moveY<-0.2){dist-= (run?0.9:0.45); if(dist<0) dist=0;}
+ if(moveY>0.2){dist+=(run?0.9:0.45); if(dist>100) dist=100;}
+ if(hasKey && moveY>0.2){dist+=0.7;}
+ px+=moveX*0.6;px=Math.max(-28,Math.min(28,px));
+ update();
+},50);
+update();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
 </script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
 </body>
 </html>
