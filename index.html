@@ -21,6 +21,15 @@ h1{color:#f22;margin:0 0 8px;font-size:30px;text-shadow:0 0 18px red}
 p{color:#bbb;line-height:1.7;font-size:14px}
 .mainbtn{border:0;border-radius:12px;background:#e00000;color:white;padding:15px 22px;font-size:18px;font-weight:bold;width:100%;margin-top:12px}
 #controls{position:fixed;inset:0;z-index:6;pointer-events:none;display:none}
+#rotateNotice{display:none;position:fixed;inset:0;z-index:20;background:#030303f5;align-items:center;justify-content:center;padding:24px;text-align:center}
+.rotateCard{max-width:340px;border:1px solid #9b1111;background:#100707;border-radius:18px;padding:25px;box-shadow:0 0 28px #9005}
+@media (orientation:portrait){
+ body.playing #rotateNotice{display:flex}
+ body.playing #hud,body.playing #controls{visibility:hidden}
+}
+@media (orientation:landscape){
+ body.playing #rotateNotice{display:none}
+}
 #stickBase{position:absolute;bottom:28px;left:22px;width:112px;height:112px;border:2px solid #ffffff55;background:#1118;border-radius:50%;pointer-events:auto}
 #stick{position:absolute;width:46px;height:46px;left:31px;top:31px;border-radius:50%;background:#d71919cc;border:2px solid #ff7777}
 #lookArea{position:absolute;right:0;top:25%;width:58%;height:65%;pointer-events:auto}
@@ -29,7 +38,17 @@ p{color:#bbb;line-height:1.7;font-size:14px}
 #runBtn{right:92px;bottom:28px}
 #soundBtn{position:absolute;top:58px;left:12px;pointer-events:auto;background:#111d;color:white;border:1px solid #555;border-radius:9px;padding:8px 10px}
 #end{display:none}
-@media(min-width:800px){#stickBase,#lookArea,.action{display:none}#controls{display:block}#status:after{content:" | WASD للحركة • الماوس للنظر • E للتفاعل"}}
+@media (orientation:landscape) and (max-width:900px){
+ #objective{top:10px;right:12px;max-width:48%;font-size:12px}
+ #brand{top:12px;font-size:12px}
+ #status{bottom:10px;font-size:11px}
+ #stickBase{width:100px;height:100px;left:18px;bottom:16px}
+ #stick{left:27px;top:27px}
+ #lightBtn{right:18px;bottom:92px}
+ #runBtn{right:18px;bottom:18px}
+ #lookArea{top:12%;height:72%;width:58%}
+}
+@media(min-width:901px){#stickBase,#lookArea,.action{display:none}#controls{display:block}#status:after{content:" | WASD للحركة • الماوس للنظر • E للتفاعل"}}
 </style>
 </head>
 <body>
@@ -47,6 +66,11 @@ p{color:#bbb;line-height:1.7;font-size:14px}
  <button id="runBtn" class="action">جري</button>
  <button id="soundBtn">الصوت: مغلق</button>
 </div>
+<div id="rotateNotice"><div class="rotateCard">
+  <div style="font-size:54px">📱 ↻</div>
+  <h2>لف الموبايل بالعرض</h2>
+  <p>اللعبة مصممة للعب بالعرض. لف جهازك للوضع الأفقي عشان تكمل.</p>
+</div></div>
 <div id="start"><div class="panel">
  <h1>💀 HELL OF ALMOZAG</h1>
  <p>استيقظت داخل مبنى مهجور عند الساعة الثالثة فجرًا. اعثر على المفتاح وافتح باب الخروج… لكن لا تدع الشيء الذي يتجول في الظلام يقترب منك.</p>
@@ -155,9 +179,22 @@ look.addEventListener('pointerdown',e=>{lastTouch={x:e.clientX,y:e.clientY,id:e.
 look.addEventListener('pointermove',e=>{if(!lastTouch||lastTouch.id!==e.pointerId)return;const dx=e.clientX-lastTouch.x,dy=e.clientY-lastTouch.y;lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};yaw-=dx*.005;pitch-=dy*.004;pitch=Math.max(-1.25,Math.min(1.25,pitch));});
 look.addEventListener('pointerup',()=>lastTouch=null);look.addEventListener('pointercancel',()=>lastTouch=null);
 document.getElementById('soundBtn').addEventListener('click',()=>{document.getElementById('soundBtn').textContent='الصوت: مؤثرات بسيطة';msg('الصوت المحيطي غير مفعل في هذه النسخة التجريبية.');});
-document.getElementById('startBtn').addEventListener('click',()=>{
- started=true;document.getElementById('start').style.display='none';document.getElementById('controls').style.display='block';
- if(innerWidth>800)renderer.domElement.requestPointerLock?.();
+document.getElementById('startBtn').addEventListener('click',async()=>{
+ started=true;
+ document.body.classList.add('playing');
+ document.getElementById('start').style.display='none';
+ document.getElementById('controls').style.display='block';
+
+ // Android browsers may allow landscape lock only after fullscreen/user action.
+ try{
+   if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+ }catch(e){}
+ try{
+   if(screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
+ }catch(e){
+   // If the browser does not support locking, the rotate notice guides the player.
+ }
+ if(innerWidth>900)renderer.domElement.requestPointerLock?.();
  msg('ابحث عن المفتاح الذهبي… وانتبه للظل.');
 });
 function blocked(x,z){
