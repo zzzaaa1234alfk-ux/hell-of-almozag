@@ -1,291 +1,200 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#000000">
-<title>جحيم المزعج X</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#050505">
+<title>HELL OF ALMOZAG</title>
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;background:#000;color:white;
- font-family:Arial,sans-serif;text-align:center;
- padding:20px;
-}
-header{
- padding:20px 5px;
- border-bottom:2px solid red;
- margin-bottom:30px;
-}
-h1{
- color:#ff1010;
- text-shadow:0 0 15px red;
- font-size:30px;
-}
-.subtitle{color:#aaa}
-.timer{
- font-size:48px;color:red;
- font-weight:bold;
- margin:35px 0 5px;
- text-shadow:0 0 15px #f00;
-}
-.box{
- background:#111;
- border:1px solid #292929;
- border-radius:20px;
- padding:22px 15px;
- margin:18px 0;
-}
-.warning{border-color:#d00000}
-h2{font-size:23px}
-p{color:#aaa;line-height:1.9}
-button{
- width:100%;padding:17px;
- background:#ed0000;color:white;
- border:0;border-radius:14px;
- font-size:20px;font-weight:bold;
- margin-top:15px;
- cursor:pointer;
-}
-button:active{transform:scale(.97)}
-input{
- width:100%;padding:16px;
- background:#080808;color:white;
- border:1px solid #e00000;
- border-radius:12px;
- font-size:19px;text-align:center;
- margin-top:15px;
- outline:none;
-}
-input:focus{box-shadow:0 0 12px red}
-.progress{
- height:13px;background:#292929;
- border-radius:20px;overflow:hidden;
- margin-top:15px;
-}
-#bar{
- height:100%;width:0%;
- background:red;transition:.4s;
-}
-#game,#win,#lose{display:none}
-#msg{color:#ff4040;font-weight:bold}
-#win h1{color:#00ff75}
-.small{font-size:14px;color:#777}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050505;color:#fff;font-family:Arial,sans-serif;touch-action:none}
+#game{position:fixed;inset:0}canvas{display:block}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse,transparent 35%,rgba(0,0,0,.72) 100%);z-index:2}
+#hud{position:fixed;inset:0;z-index:5;pointer-events:none}
+#brand{position:absolute;top:12px;left:12px;color:#f22;font-weight:bold;letter-spacing:2px;text-shadow:0 0 12px red;font-size:13px}
+#objective{position:absolute;top:12px;right:12px;background:#080808c9;border:1px solid #7b1010;border-radius:10px;padding:9px 12px;font-size:13px;max-width:65%;line-height:1.5}
+#status{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#080808b8;border:1px solid #444;border-radius:20px;padding:7px 13px;font-size:12px;white-space:nowrap}
+#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:20px;color:#ddd;text-shadow:0 0 8px #fff}
+#message{position:absolute;top:24%;left:50%;transform:translateX(-50%);width:90%;text-align:center;color:#fff;font-size:17px;text-shadow:0 2px 8px #000;opacity:0;transition:opacity .2s}
+#start,#end{position:fixed;inset:0;z-index:10;background:linear-gradient(#000b,#000e),radial-gradient(ellipse at center,#3b0505,#050505 65%);display:flex;align-items:center;justify-content:center;padding:22px;text-align:center}
+.panel{width:min(440px,100%);background:#090909ed;border:1px solid #8d1010;border-radius:18px;padding:25px 20px;box-shadow:0 0 35px #7004}
+h1{color:#f22;margin:0 0 8px;font-size:30px;text-shadow:0 0 18px red}
+p{color:#bbb;line-height:1.7;font-size:14px}
+.mainbtn{border:0;border-radius:12px;background:#e00000;color:white;padding:15px 22px;font-size:18px;font-weight:bold;width:100%;margin-top:12px}
+#controls{position:fixed;inset:0;z-index:6;pointer-events:none;display:none}
+#stickBase{position:absolute;bottom:28px;left:22px;width:112px;height:112px;border:2px solid #ffffff55;background:#1118;border-radius:50%;pointer-events:auto}
+#stick{position:absolute;width:46px;height:46px;left:31px;top:31px;border-radius:50%;background:#d71919cc;border:2px solid #ff7777}
+#lookArea{position:absolute;right:0;top:25%;width:58%;height:65%;pointer-events:auto}
+.action{position:absolute;right:18px;bottom:30px;width:62px;height:62px;border-radius:50%;border:1px solid #ff5555;background:#240606dd;color:white;font-size:12px;pointer-events:auto}
+#lightBtn{right:92px;bottom:102px}
+#runBtn{right:92px;bottom:28px}
+#soundBtn{position:absolute;top:58px;left:12px;pointer-events:auto;background:#111d;color:white;border:1px solid #555;border-radius:9px;padding:8px 10px}
+#end{display:none}
+@media(min-width:800px){#stickBase,#lookArea,.action{display:none}#controls{display:block}#status:after{content:" | WASD للحركة • الماوس للنظر • E للتفاعل"}}
 </style>
 </head>
-
 <body>
-
-<header>
-<h1>💀 جحيم المزعج 💀</h1>
-<p class="subtitle">
-HACKER X | HELL OF ALMOZAG
-</p>
-</header>
-
-<div id="home">
-
-<div class="timer">03:00:00</div>
-<p>الساعة 3 الفجر.. الكل نايم.. إلا أنت!</p>
-
-<div class="box warning">
-<h2>⚠️ تحذير - اللعب على مسؤوليتك</h2>
-<p>
-اللعبة تحتوي على ألغاز وأجواء غامضة
-ومؤثرات صوتية اختيارية.
-</p>
+<div id="game"></div><div id="vignette"></div>
+<div id="hud">
+ <div id="brand">HELL OF ALMOZAG</div>
+ <div id="objective">المهمة: ابحث عن المفتاح الأحمر وافتح باب الخروج.</div>
+ <div id="crosshair">+</div><div id="message"></div>
+ <div id="status">المفتاح: 0/1</div>
 </div>
-
-<div class="box">
-<h2>📊 تقدمك في الجحيم</h2>
-<p id="progressText">خلصت 0 من 4 ملفات</p>
-<div class="progress">
-<div id="bar"></div>
+<div id="controls">
+ <div id="stickBase"><div id="stick"></div></div>
+ <div id="lookArea"></div>
+ <button id="lightBtn" class="action">الكشاف</button>
+ <button id="runBtn" class="action">جري</button>
+ <button id="soundBtn">الصوت: مغلق</button>
 </div>
-<p class="small">افتح الملفات الأربعة لتحصل على لقب الناجي 👑</p>
-</div>
+<div id="start"><div class="panel">
+ <h1>💀 HELL OF ALMOZAG</h1>
+ <p>استيقظت داخل مبنى مهجور عند الساعة الثالثة فجرًا. اعثر على المفتاح وافتح باب الخروج… لكن لا تدع الشيء الذي يتجول في الظلام يقترب منك.</p>
+ <p>على الهاتف: استخدم العصا للحركة واسحب يمين الشاشة للنظر. على الكمبيوتر: WASD والماوس.</p>
+ <button class="mainbtn" id="startBtn">ابدأ الكابوس</button>
+ <p style="font-size:11px">لعبة خيالية. يفضّل استخدام سماعات الصوت بمستوى منخفض.</p>
+</div></div>
+<div id="end"><div class="panel"><h1 id="endTitle">انتهت اللعبة</h1><p id="endText"></p><button class="mainbtn" onclick="location.reload()">العب من جديد</button></div></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-<button onclick="startGame()">🔥 ابدأ اللعب - ادخل الجحيم</button>
+const mount=document.getElementById('game');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x030303);scene.fog=new THREE.FogExp2(0x050505,.047);
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,90);
+camera.position.set(0,1.65,8);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
+mount.appendChild(renderer.domElement);
 
-</div>
-
-<div id="game">
-
-<div class="timer" id="clock">03:00</div>
-
-<div class="box">
-<h2 id="title">الملف 1 / 4</h2>
-<p id="question"></p>
-
-<input id="answer" placeholder="اكتب إجابتك هنا">
-
-<button onclick="checkAnswer()">🔓 افتح الملف</button>
-
-<p id="msg"></p>
-</div>
-
-<p id="counter">الملفات المفتوحة: 0 / 4</p>
-
-</div>
-
-<div id="win" class="box">
-<h1>👑 لقد نجوت!</h1>
-<h2>أنت الناجي الوحيد</h2>
-<p>نجحت في فتح الملفات الأربعة!</p>
-<button onclick="location.reload()">العب من جديد</button>
-</div>
-
-<div id="lose" class="box">
-<h1>انتهى الوقت!</h1>
-<p>لم تستطع إنهاء الملفات في الوقت المحدد.</p>
-<button onclick="location.reload()">حاول مرة أخرى</button>
-</div>
-
-<script>
-
-const files = [
-{
-q:"الملف الأول 👻: أمشي من غير رجلين وأظهر في الحكايات المخيفة، من أنا؟",
-a:"شبح"
-},
-{
-q:"الملف الثاني ⏰: ما الرقم الموجود في الساعة التي تبدأ فيها حكايتنا؟",
-a:"3"
-},
-{
-q:"الملف الثالث 🔥: شيء يضيء ويعطي حرارة، ما هو؟",
-a:"نار"
-},
-{
-q:"الملف الرابع 🔐: اكتب كلمة السر الأخيرة للهرب من الجحيم.",
-a:"المزعج"
+scene.add(new THREE.HemisphereLight(0x536070,0x100606,.42));
+const ambient=new THREE.AmbientLight(0x28303b,.22);scene.add(ambient);
+const redLight=new THREE.PointLight(0xaa0808,2.2,13);redLight.position.set(0,2.6,-5);scene.add(redLight);
+const flashlight=new THREE.SpotLight(0xe2edff,32,22,Math.PI/7,.55,1.4);
+camera.add(flashlight);flashlight.position.set(0,0,0);flashlight.target.position.set(0,0,-1);camera.add(flashlight.target);scene.add(camera);
+const mats={
+ wall:new THREE.MeshStandardMaterial({color:0x29292b,roughness:.95}),
+ floor:new THREE.MeshStandardMaterial({color:0x171719,roughness:1}),
+ ceiling:new THREE.MeshStandardMaterial({color:0x101012,roughness:1}),
+ trim:new THREE.MeshStandardMaterial({color:0x480b0b,roughness:.8}),
+ door:new THREE.MeshStandardMaterial({color:0x301414,roughness:.8}),
+};
+function box(x,y,z,w,h,d,mat,cast=true){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;scene.add(m);return m;
 }
-];
-
-let level=0;
-let seconds=180;
-let timer=null;
-let locked=false;
-
-function startGame(){
-
-document.getElementById("home").style.display="none";
-document.getElementById("game").style.display="block";
-
-level=0;
-seconds=180;
-showQuestion();
-updateProgress();
-
-timer=setInterval(()=>{
- seconds--;
- let m=Math.floor(seconds/60);
- let s=seconds%60;
-
- document.getElementById("clock").textContent=
- String(m).padStart(2,"0")+":"+
- String(s).padStart(2,"0");
-
- if(seconds<=0){
-  clearInterval(timer);
-  document.getElementById("game").style.display="none";
-  document.getElementById("lose").style.display="block";
- }
-},1000);
-
+// Main corridor and connected side alcoves
+box(0,-.15,-5,9,.3,38,mats.floor,false);
+box(0,3.25,-5,9,.3,38,mats.ceiling,false);
+box(-4.5,1.5,-5,.3,3,38,mats.wall);
+box(4.5,1.5,-5,.3,3,38,mats.wall);
+box(0,1.5,13,9,3,.3,mats.wall);
+box(0,1.5,-23,9,3,.3,mats.wall);
+// cross walls leave a central doorway
+for(const z of [-1,-8,-15]){box(-2.85,1.5,z,3.3,3,.35,mats.wall);box(2.85,1.5,z,3.3,3,.35,mats.wall);}
+for(const z of [-4,-11,-18]){box(-2.7,1.5,z,3.6,3,.3,mats.wall);box(2.7,1.5,z,3.6,3,.3,mats.wall);}
+for(let z=10;z>-22;z-=5){
+ const lamp=new THREE.PointLight(0x9aa5b8,.45,7);lamp.position.set(0,2.75,z);scene.add(lamp);
+ const fixture=box(0,3.02,z,.65,.08,.35,new THREE.MeshStandardMaterial({color:0x777777,emissive:0x222222}),false);
 }
+// pipes and wall details
+for(let z=9;z>-22;z-=3){box(-4.25,2.65,z,.12,.12,2.4,mats.trim,false);box(4.25,2.65,z,.12,.12,2.4,mats.trim,false);}
+// scattered crates
+const crateMat=new THREE.MeshStandardMaterial({color:0x29201b,roughness:1});
+box(-2.9,.55,4,1.2,1.1,1.2,crateMat);box(2.8,.45,-10,1.1,.9,1.1,crateMat);box(-2.8,.6,-17,1.3,1.2,1.3,crateMat);
+// Exit door at far end
+const exitDoor=box(0,1.45,-21.9,2.3,2.8,.25,mats.door);
+const exitGlow=new THREE.PointLight(0xff0909,1.8,5);exitGlow.position.set(0,2,-21);scene.add(exitGlow);
+// Key floating on a pedestal
+box(-2.6,.35,-13, .7,.7,.7,crateMat);
+const key=new THREE.Group();
+const ring=new THREE.Mesh(new THREE.TorusGeometry(.19,.055,8,18),new THREE.MeshStandardMaterial({color:0xffbf35,metalness:.7,roughness:.3}));
+key.add(ring);const shaft=new THREE.Mesh(new THREE.BoxGeometry(.08,.48,.08),new THREE.MeshStandardMaterial({color:0xffbf35,metalness:.7}));shaft.position.y=-.28;key.add(shaft);
+key.position.set(-2.6,1.05,-13);scene.add(key);
+const keyLight=new THREE.PointLight(0xffa51b,1.4,3);keyLight.position.copy(key.position);scene.add(keyLight);
+// Monster - stylized shadow creature, intentionally non-graphic
+const monster=new THREE.Group();
+const dark=new THREE.MeshStandardMaterial({color:0x050506,roughness:1});
+const body=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.95,5,8),dark);body.position.y=1.05;monster.add(body);
+const head=new THREE.Mesh(new THREE.SphereGeometry(.34,12,10),dark);head.position.y=1.9;monster.add(head);
+for(const x of [-.13,.13]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.045,8,8),new THREE.MeshBasicMaterial({color:0xff1717}));eye.position.set(x,1.95,-.29);monster.add(eye);}
+monster.position.set(2.7,0,-18);scene.add(monster);
+const monsterLamp=new THREE.PointLight(0x8b0000,.8,3);monster.add(monsterLamp);monsterLamp.position.set(0,1.8,0);
 
-function showQuestion(){
-
-document.getElementById("title").textContent=
-"الملف "+(level+1)+" / 4";
-
-document.getElementById("question").textContent=
-files[level].q;
-
-document.getElementById("answer").value="";
-document.getElementById("msg").textContent="";
-document.getElementById("answer").focus();
-
+let started=false,hasKey=false,ended=false,flashOn=true,run=false;
+let yaw=0,pitch=0,moveX=0,moveY=0,joyId=null,lastTouch=null;
+const keys={};
+const playerRadius=.38;
+function msg(t){const el=document.getElementById('message');el.textContent=t;el.style.opacity=1;clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.style.opacity=0,2100);}
+function endGame(win){if(ended)return;ended=true;document.getElementById('end').style.display='flex';document.getElementById('endTitle').textContent=win?'نجوت من الجحيم 👑':'لقد أمسك بك الظل';document.getElementById('endText').textContent=win?'وجدت طريق الخروج ونجوت من المبنى المهجور.':'انتهت محاولتك هذه المرة. حاول مرة أخرى وابحث عن المفتاح.';}
+function setFlash(){flashOn=!flashOn;flashlight.visible=flashOn;document.getElementById('lightBtn').textContent=flashOn?'الكشاف: ON':'الكشاف: OFF';}
+document.getElementById('lightBtn').addEventListener('click',setFlash);
+document.getElementById('runBtn').addEventListener('touchstart',e=>{e.preventDefault();run=true;});
+document.getElementById('runBtn').addEventListener('touchend',()=>run=false);
+document.getElementById('runBtn').addEventListener('mousedown',()=>run=true);
+document.getElementById('runBtn').addEventListener('mouseup',()=>run=false);
+function interact(){
+ if(!started||ended)return;
+ const p=camera.position;
+ if(!hasKey&&p.distanceTo(key.position)<2.2){hasKey=true;scene.remove(key);scene.remove(keyLight);document.getElementById('status').textContent='المفتاح: 1/1';document.getElementById('objective').textContent='المهمة: وصلت للمفتاح! ارجع إلى باب الخروج.';msg('حصلت على المفتاح… ارجع لباب الخروج!');return;}
+ if(p.distanceTo(exitDoor.position)<2.7){
+  if(hasKey)endGame(true);else msg('الباب مقفول… دور على المفتاح الأحمر أولًا.');
+ }else msg('لا يوجد شيء يمكن استخدامه هنا.');
 }
-
-function updateProgress(){
-
-let percent=(level/4)*100;
-
-document.getElementById("bar").style.width=
-percent+"%";
-
-document.getElementById("progressText").textContent=
-"خلصت "+level+" من 4 ملفات";
-
-document.getElementById("counter").textContent=
-"الملفات المفتوحة: "+level+" / 4";
-
-}
-
-function checkAnswer(){
-
-if(locked)return;
-
-let value=document.getElementById("answer")
-.value.trim().replace(/\s/g,"");
-
-let correct=files[level].a;
-
-if(value===correct){
-
-locked=true;
-
-document.getElementById("msg").textContent=
-"✅ إجابة صحيحة! تم فتح الملف.";
-
-level++;
-updateProgress();
-
-setTimeout(()=>{
-
-locked=false;
-
-if(level>=4){
-
-clearInterval(timer);
-
-document.getElementById("game").style.display="none";
-document.getElementById("win").style.display="block";
-
-document.getElementById("bar").style.width="100%";
-document.getElementById("progressText").textContent=
-"اكتملت الملفات الأربعة! 👑";
-
-}else{
-
-showQuestion();
-
-}
-
-},900);
-
-}else{
-
-document.getElementById("msg").textContent=
-"❌ إجابة غير صحيحة.. حاول مرة أخرى!";
-
-}
-
-}
-
-document.getElementById("answer")
-.addEventListener("keydown",function(e){
-
-if(e.key==="Enter"){
-checkAnswer();
-}
-
+addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')interact();if(e.code==='KeyF')setFlash();});
+addEventListener('keyup',e=>{keys[e.code]=false;});
+renderer.domElement.addEventListener('click',()=>{if(started&&innerWidth>800)renderer.domElement.requestPointerLock?.();});
+addEventListener('mousemove',e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.25,Math.min(1.25,pitch));}});
+const base=document.getElementById('stickBase'),stick=document.getElementById('stick');
+base.addEventListener('pointerdown',e=>{joyId=e.pointerId;base.setPointerCapture(joyId);joy(e);});
+base.addEventListener('pointermove',e=>{if(e.pointerId===joyId)joy(e);});
+function joy(e){const r=base.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const len=Math.hypot(dx,dy),max=38;if(len>max){dx=dx/len*max;dy=dy/len*max;}moveX=dx/max;moveY=dy/max;stick.style.transform=`translate(${dx}px,${dy}px)`;}
+function stopJoy(e){if(e.pointerId===joyId){joyId=null;moveX=moveY=0;stick.style.transform='';}}
+base.addEventListener('pointerup',stopJoy);base.addEventListener('pointercancel',stopJoy);
+const look=document.getElementById('lookArea');
+look.addEventListener('pointerdown',e=>{lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};look.setPointerCapture(e.pointerId);});
+look.addEventListener('pointermove',e=>{if(!lastTouch||lastTouch.id!==e.pointerId)return;const dx=e.clientX-lastTouch.x,dy=e.clientY-lastTouch.y;lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};yaw-=dx*.005;pitch-=dy*.004;pitch=Math.max(-1.25,Math.min(1.25,pitch));});
+look.addEventListener('pointerup',()=>lastTouch=null);look.addEventListener('pointercancel',()=>lastTouch=null);
+document.getElementById('soundBtn').addEventListener('click',()=>{document.getElementById('soundBtn').textContent='الصوت: مؤثرات بسيطة';msg('الصوت المحيطي غير مفعل في هذه النسخة التجريبية.');});
+document.getElementById('startBtn').addEventListener('click',()=>{
+ started=true;document.getElementById('start').style.display='none';document.getElementById('controls').style.display='block';
+ if(innerWidth>800)renderer.domElement.requestPointerLock?.();
+ msg('ابحث عن المفتاح الذهبي… وانتبه للظل.');
 });
-
+function blocked(x,z){
+ // Corridor bounds and a few crate obstacles
+ if(x< -4||x>4||z< -22.5||z>12.5)return true;
+ const obstacles=[[-2.9,4,.85],[2.8,-10,.8],[-2.8,-17,.9]];
+ return obstacles.some(([ox,oz,r])=>Math.hypot(x-ox,z-oz)<r+.35);
+}
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04);
+ if(started&&!ended){
+  const forward=(keys.KeyW||keys.ArrowUp?-1:0)+(keys.KeyS||keys.ArrowDown?1:0)-moveY;
+  const side=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+moveX;
+  const speed=(run||keys.ShiftLeft?4.1:2.35)*dt;
+  const dx=(Math.sin(yaw)*(-forward)+Math.cos(yaw)*side)*speed;
+  const dz=(Math.cos(yaw)*forward-Math.sin(yaw)*side)*speed;
+  const nx=camera.position.x+dx,nz=camera.position.z+dz;
+  if(!blocked(nx,camera.position.z))camera.position.x=nx;
+  if(!blocked(camera.position.x,nz))camera.position.z=nz;
+  camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;
+  // The creature begins hunting after the key is collected.
+  if(hasKey){
+   const dxp=camera.position.x-monster.position.x,dzp=camera.position.z-monster.position.z;
+   const dist=Math.hypot(dxp,dzp);
+   if(dist>0.001){monster.position.x+=(dxp/dist)*dt*1.05;monster.position.z+=(dzp/dist)*dt*1.05;}
+   monster.lookAt(camera.position.x,1,camera.position.z);
+   if(dist<1.15)endGame(false);
+  }
+  key.rotation.y+=dt*1.5;key.position.y=1.05+Math.sin(performance.now()*.002)*.08;keyLight.position.copy(key.position);
+  redLight.intensity=1.7+Math.sin(performance.now()*.004)*.55;
+ }
+ renderer.render(scene,camera);
+}
+animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 </script>
 </body>
 </html>
