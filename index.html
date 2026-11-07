@@ -5,193 +5,220 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>جحيم المزعج - HELL OF ALMOZAG</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family: Segoe UI ,Tahoma}
-body{background:#000;color:#ff0000;overflow-x:hidden;min-height:100vh}
-.top{padding:15px;text-align:center;border-bottom:2px solid #ff0000;background:#0a0000}
-.top h1{font-size:28px;letter-spacing:2px;text-shadow:0 0 20px #ff0000}
-.top p{color:#fff;font-size:13px;margin-top:5px}
-.hacker{color:#00ff00;font-weight:bold}
-.center{padding:20px;max-width:600px;margin:0 auto}
-.warning{background:#1a0000;border:1px solid #ff0000;padding:15px;border-radius:12px;text-align:center;margin-bottom:20px}
-.warning h2{font-size:18px;margin-bottom:8px}
-.warning p{color:#ccc;font-size:14px;line-height:1.6}
-.files{display:grid;gap:15px}
-.file{background:#111;border:2px solid #333;border-radius:15px;padding:18px;cursor:pointer;transition:0.3s}
-.file:hover,.file:active{border-color:#ff0000;transform:scale(1.02);background:#1a0000}
-.file h3{color:#fff;font-size:18px;margin-bottom:5px}
-.file p{color:#999;font-size:13px}
-.file span{color:#ff0000;font-size:12px;font-weight:bold}
-.btn{width:100%;background:#ff0000;color:#fff;border:none;padding:15px;border-radius:10px;font-size:18px;font-weight:bold;margin-top:20px;cursor:pointer}
-.btn-green{background:#00ff00;color:#000}
-.screen{display:none;padding:20px;max-width:600px;margin:0 auto;min-height:80vh}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma}
+body{background:#000;color:#fff;min-height:100vh}
+.top{background:#0a0000;border-bottom:2px solid #f00;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
+.top h1{color:#f00;font-size:24px;text-shadow:0 0 15px #f00}
+.top p{font-size:12px;color:#aaa;margin-top:4px}
+.top p b{color:#0f0}
+.wrap{max-width:580px;margin:0 auto;padding:18px}
+.card{background:#111;border:1px solid #333;border-radius:14px;padding:16px;margin-bottom:14px}
+.card h2{font-size:18px;margin-bottom:6px}
+.card p{color:#aaa;font-size:14px;line-height:1.6}
+.btn{width:100%;background:#f00;color:#fff;border:none;padding:14px;border-radius:12px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:10px}
+.btn-green{background:#0f0;color:#000}
+.btn-dark{background:#222;border:1px solid #444}
+.file{background:#111;border:2px solid #333;border-radius:15px;padding:18px;margin-bottom:14px;cursor:pointer}
+.file:active{border-color:#f00;background:#1a0000;transform:scale(1.01)}
+.file h3{font-size:18px;margin-bottom:5px}
+.file p{color:#999;font-size:13px;line-height:1.5}
+.file span{color:#f00;font-size:12px;font-weight:bold}
+.screen{display:none}
 .screen.active{display:block}
-.chat{background:#0a0a0a;border:1px solid #333;border-radius:12px;padding:15px;min-height:300px;margin:15px 0}
-.msg{padding:10px 12px;border-radius:10px;margin-bottom:10px;font-size:15px;line-height:1.5;max-width:85%}
-.me{background:#ff0000;color:#fff;margin-right:auto}
-.him{background:#222;color:#fff;margin-left:auto;border:1px solid #444}
-.creepy{color:#ff0000;font-weight:bold}
-.big{font-size:32px;text-align:center;margin:30px 0;line-height:1.4}
+.chat{background:#0a0a0a;border:1px solid #333;border-radius:14px;padding:14px;min-height:280px;margin:12px 0;max-height:380px;overflow-y:auto}
+.msg{padding:10px 12px;border-radius:10px;margin-bottom:10px;max-width:88%;line-height:1.5;font-size:15px}
+.me{background:#f00;color:#fff;margin-right:auto}
+.him{background:#222;border:1px solid #444;margin-left:auto}
+.sys{background:#1a0000;border:1px solid #f00;color:#ffaaaa;text-align:center;margin:10px auto;font-size:13px}
+.choice{display:block;width:100%;background:#111;border:1px solid #444;color:#fff;padding:13px;border-radius:12px;margin-bottom:9px;font-size:15px;cursor:pointer;text-align:right}
+.choice:active{background:#f00}
 input{width:100%;padding:13px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;font-size:16px;outline:none}
-.back{color:#888;text-align:center;margin-top:20px;cursor:pointer}
-.jumpscare{position:fixed;inset:0;background:#000;z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center}
-.jumpscare.show{display:flex}
-.jumpscare h1{font-size:70px;animation:shake 0.1s infinite}
-@keyframes shake{0%{transform:translate(5px)}50%{transform:translate(-5px)}100%{transform:translate(5px)}}
-.glitch{font-size:22px;color:#fff;margin-top:10px}
-.footer{text-align:center;color:#555;font-size:12px;padding:20px}
+.back{text-align:center;color:#888;margin-top:14px;cursor:pointer;font-size:14px}
+.progress{background:#222;height:8px;border-radius:20px;overflow:hidden;margin:10px 0}
+.progress div{background:#f00;height:100%;width:0%;transition:0.5s}
+.jump{position:fixed;inset:0;background:#000;z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
+.jump.show{display:flex}
+.jump h1{font-size:85px;animation:shake .1s infinite}
+@keyframes shake{0%{transform:translate(6px)}50%{transform:translate(-6px)}100%{transform:translate(6px)}}
+.badge{display:inline-block;background:#f00;color:#fff;font-size:11px;padding:3px 8px;border-radius:20px}
 </style>
 </head>
 <body>
-
 <div class="top">
 <h1>💀 جحيم المزعج 💀</h1>
-<p>HELL OF ALMOZAG | صنع بواسطة <span class="hacker">HACKER X</span></p>
+<p>HELL OF ALMOZAG | صنع بواسطة <b>HACKER X</b></p>
 </div>
 
-<!-- الصفحة الرئيسية -->
-<div id="home" class="center">
-<div class="warning">
+<!-- الرئيسية -->
+<div id="home" class="wrap screen active">
+<div class="card" style="text-align:center;border-color:#f00">
 <h2>⚠️ تحذير - العب على مسؤوليتك</h2>
-<p>اللعبة دي فيها أصوات رعب وصرخات وخضات مفاجئة.<br>البس سماعة.. ومتتلعبش لوحدك الساعة 3 الفجر.<br>لو قلبك ضعيف متكملش.</p>
+<p>اللعبة فيها أصوات رعب وخضات وصرخات.<br>البس سماعة.. ومتتلعبش لوحدك الساعة 3 الفجر.<br>لو قلبك ضعيف متكملش.</p>
+</div>
+<div class="card" style="text-align:center">
+<h2>📊 تقدمك في الجحيم</h2>
+<p id="progressText">خلصت 0 من 4 ملفات</p>
+<div class="progress"><div id="progressBar"></div></div>
+<p style="font-size:12px">خلص الـ 4 ملفات عشان تاخد لقب الناجي 👑</p>
+</div>
+<button class="btn" onclick="play();show('files')">ابدأ اللعب - ادخل الجحيم 🔥</button>
+<p style="text-align:center;color:#777;font-size:13px;margin-top:10px">4 ملفات ملعونة.. هتقدر تخلصهم؟</p>
 </div>
 
-<button class="btn" onclick="playSound();showScreen( files )">ابدأ اللعب - ادخل الجحيم 🔥</button>
-<p style="text-align:center;color:#888;margin-top:10px;font-size:13px">4 ملفات ملعونة مستنياك.. هتقدر تخلصهم كلهم؟</p>
-</div>
+<!-- قائمة الملفات -->
+<div id="files" class="wrap screen">
+<h2 style="text-align:center;margin-bottom:14px">اختر ملف.. لو تقدر</h2>
 
-<!-- الملفات -->
-<div id="files" class="screen">
-<h2 style="text-align:center;margin-bottom:5px">اختر ملف.. لو تقدر</h2>
-<p style="text-align:center;color:#888;margin-bottom:20px">كل ملف ليه قصة مختلفة.. ونهاية مختلفة</p>
-<div class="files">
 <div class="file" onclick="openFile(1)">
-<h3>📁 FILE 01 - لعبة الساعة 3 الفجر</h3>
-<p>صحيت الساعة 3 الفجر على صوت حد بينده اسمك..</p>
+<h3>📁 FILE 01 - لعبة الساعة 3 الفجر <span class="badge" id="done1" style="display:none">تم ✅</span></h3>
+<p>صحيت الساعة 3 الفجر على صوت حد بينده اسمك.. والباب مقفول من جوه.</p>
 <span>اضغط للفتح - خطر: عالي جدا</span>
 </div>
+
 <div class="file" onclick="openFile(2)">
-<h3>💬 FILE 02 - الشات الملعون</h3>
-<p>واحد غريب بعتلك رسالة.. وبيقول انه شايفك دلوقتي</p>
+<h3>💬 FILE 02 - الشات الملعون <span class="badge" id="done2" style="display:none">تم ✅</span></h3>
+<p>واحد غريب بعتلك رسالة.. وبيقول انه شايفك دلوقتي ولابس ايه.</p>
 <span>اضغط للفتح - خطر: مرعب</span>
 </div>
+
 <div class="file" onclick="openFile(3)">
-<h3>🌑 FILE 03 - ملف الدارك ويب</h3>
-<p>فتحت لينك غلط.. ودلوقتي هما اللي فتحوك</p>
+<h3>🌑 FILE 03 - ملف الدارك ويب <span class="badge" id="done3" style="display:none">تم ✅</span></h3>
+<p>فتحت لينك غلط.. ودلوقتي هما اللي فتحوك وجوه جهازك.</p>
 <span>اضغط للفتح - خطر: قاتل</span>
 </div>
+
 <div class="file" onclick="openFile(4)">
-<h3>🏚️ FILE 04 - البيت المسكون</h3>
-<p>دخلت بيت مهجور عشان تحدي.. بس البيت دخل جواك</p>
+<h3>🏚️ FILE 04 - البيت المسكون <span class="badge" id="done4" style="display:none">تم ✅</span></h3>
+<p>دخلت بيت مهجور عشان تحدي.. بس البيت دخل جواك ومش هيسيبك.</p>
 <span>اضغط للفتح - خطر: لا ترجع</span>
 </div>
-</div>
-<div class="back" onclick="showScreen( home )">⬅ رجوع</div>
+
+<button class="btn btn-dark" onclick="show('home')">⬅ رجوع</button>
 </div>
 
 <!-- شاشة اللعب -->
-<div id="game" class="screen">
+<div id="game" class="wrap screen">
 <h2 id="gameTitle" style="text-align:center">FILE 01</h2>
+<p id="gameDesc" style="text-align:center;color:#aaa;font-size:13px;margin-top:5px"></p>
 <div class="chat" id="chatBox"></div>
-<input id="userInput" placeholder="اكتب ردك هنا... و دوس ارسال" onkeydown="if(event.key=== Enter ) sendMsg()">
+<div id="choices"></div>
+<input id="userInput" placeholder="اكتب ردك هنا...">
 <button class="btn" onclick="sendMsg()">ارسال ➤</button>
-<div class="back" onclick="showScreen( files )">⬅ اخرج من الملف ده - لو تقدر</div>
+<div class="back" onclick="show('files')">⬅ اخرج من الملف ده - لو تقدر</div>
+</div>
+
+<!-- النهاية -->
+<div id="end" class="wrap screen">
+<div class="card" style="text-align:center;border-color:#0f0">
+<h2 style="font-size:28px">👑 انت الناجي الوحيد</h2>
+<p style="margin-top:10px">خلصت الـ 4 ملفات كلهم ومموتش..<br>HACKER X بيحييك.. انت مش سهل.<br><br><b style="color:#0f0">ابعت اللعبة لصاحبك.. وخليه يجرب يعديها لو يقدر 💀</b></p>
+</div>
+<button class="btn btn-green" onclick="show('files')">العب تاني 🔁</button>
 </div>
 
 <!-- الخضة -->
-<div id="jump" class="jumpscare" onclick="hideJump()">
-<h1>💀👹💀</h1>
-<p class="big" style="color:#ff0000">لقيتك..</p>
-<p class="glitch">HACKER X كان هنا.. وانت اللي بعده</p>
-<p style="color:#fff;margin-top:20px">دوس في اي حتة عشان تكمل.. لو لسه عايش</p>
+<div id="jump" class="jump" onclick="finishFile()">
+<h1>👹💀👹</h1>
+<p style="font-size:34px;color:#f00;font-weight:bold;margin-top:10px" id="jumpText">لقيتك..</p>
+<p style="color:#fff;margin-top:10px;line-height:1.6">HACKER X كان هنا..<br>وانت اللي بعده</p>
+<p style="color:#888;margin-top:20px;font-size:13px">دوس في اي حتة عشان تكمل.. لو لسه عايش</p>
 </div>
 
-<div class="footer">© 2026 HACKER X - جحيم المزعج - العب على مسؤوليتك</div>
-
 <script>
-let currentFile=1;
-let step=0;
-let stories={
-1:[
-{h:"الساعة 3:00 الفجر.. صحيت على صوت خبط على الشباك.."},
-{h:"مين هناك؟؟ انت مين وعايز ايه؟"},
-{m:"انا اللي كنت نايم مكانك.."},
-{h:"انت بتقول ايه؟ انا لوحدي في الاوضة!"},
-{m:"بص وراك دلوقتي.."},
-],
-2:[
-{h:"السلام عليكم.. انت مين؟"},
-{h:"انا شايفك.. انت لابس تيشيرت اسود صح؟"},
-{m:"ازاي عرفت؟؟"},
-{h:"عشان انا واقف ورا الشباك بتاعك دلوقتي"},
-{m:"كداب! انا قافل الشباك"},
-{h:"طب بص على الكاميرا بتاعتك.. انا بعملك باي 👋"},
-],
-3:[
-{h:"انت فتحت الملف الغلط يا صاحبي.."},
-{h:"انا مفتحتش حاجة! انت مين؟"},
-{m:"انا HACKER X.. وانا دلوقتي جوه جهازك"},
-{h:"اطلع من جهازي!!"},
-{m:"متخفش.. انا مش هطلع.. انا هاخدك معايا"},
-],
-4:[
-{h:"البيت ده شكله مرعب اوي.. بس انا هدخل"},
-{h:"سمعت صوت حد بيعيط جوه.."},
-{m:"متدخلش.. ارجع.."},
-{h:"مين اللي بيتكلم؟؟"},
-{m:"انا اللي دخلت قبلك.. ولسه محبوس هنا من 10 سنين"},
-{h:"انت فين؟؟"},
-{m:"انا في الحيطة اللي وراك.. خبط عليها 3 مرات وهتشوفني"},
-]
+let current=1, step=0, done=new Set();
+let data={
+1:{title:"FILE 01 - لعبة الساعة 3 الفجر",desc:"الساعة 3:00 الفجر.. الكل نايم إلا انت",jump:"لقيتك.. انت اللي صحيتني",steps:[
+{him:"تك.. تك.. تك.. صوت خبط على الشباك",choices:["مين بيخبط؟ 😨","ده حلم.. انا نايم"]},
+{him:"افتح الشباك.. انا بردان بره",choices:["انت مين؟","مش هفتح لحد"]},
+{him:"انا اللي كنت نايم مكانك.. قبل ما تيجي انت",choices:["انت بتقول ايه؟؟","امشي من هنا!!"]},
+{him:"بص وراك.. بس متصرخش",choices:["مش هبص 😭","هبص.. انا مش خايف"]},
+]},
+2:{title:"FILE 02 - الشات الملعون",desc:"رسالة من رقم مجهول.. الساعة 3 الفجر",jump:"انا شايفك دلوقتي..",steps:[
+{him:"السلام عليكم..",choices:["مين؟","ازاي جبت رقمي؟"]},
+{him:"انا شايفك.. انت لابس تيشيرت اسود صح؟",choices:["ازاي عرفت؟؟ 😱","كداب.. انا مش لابس كده"]},
+{him:"عشان انا واقف ورا الشباك بتاعك دلوقتي",choices:["انت بتهزر صح؟","همسكك دلوقتي"]},
+{him:"طب بص على الكاميرا بتاعتك.. انا بعملك باي 👋",choices:["مش هبص","هبص.. وريني"]},
+]},
+3:{title:"FILE 03 - ملف الدارك ويب",desc:"فتحت لينك غلط.. ودلوقتي هما جوه جهازك",jump:"انا جوه جهازك..",steps:[
+{him:"انت فتحت الملف الغلط يا صاحبي..",choices:["انا مفتحتش حاجة!","انت مين؟"]},
+{him:"انا HACKER X.. وانا دلوقتي جوه جهازك",choices:["اطلع من جهازي!!","انت عايز ايه؟"]},
+{him:"انا شايف كل صورك.. وكل شاتاتك",choices:["امسحهم!!","سيبني في حالي"]},
+{him:"متخفش.. انا مش هطلع.. انا هاخدك معايا",choices:["لااااا","مش هتقدر"]},
+]},
+4:{title:"FILE 04 - البيت المسكون",desc:"دخلت بيت مهجور عشان تحدي..",jump:"انت مش هتخرج من هنا..",steps:[
+{him:"البيت ده شكله مرعب اوي.. بس انا هدخل",choices:["ادخل.. متخافش","ارجع.. بلاش"]},
+{him:"سمعت صوت حد بيعيط جوه..",choices:["مين بيعيط؟","انا سامعك.. فين انت؟"]},
+{him:"انا اللي دخلت قبلك.. ولسه محبوس هنا من 10 سنين",choices:["انت فين؟؟","ازاي اخرجك؟"]},
+{him:"انا في الحيطة اللي وراك.. خبط عليها 3 مرات وهتشوفني",choices:["هخبط..","مش هخبط.. انا ههرب"]},
+]},
 };
 
-function showScreen(id){
-document.querySelectorAll( .center,.screen ).forEach(e=>e.classList.remove( active ));
-if(id=== home ){document.getElementById( home ).style.display= block ;document.getElementById( files ).classList.remove( active );document.getElementById( game ).classList.remove( active );}
-else{document.getElementById( home ).style.display= none ;document.getElementById(id).classList.add( active );}
+function show(id){
+document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 window.scrollTo(0,0);
+updateProgress();
 }
-function playSound(){
-try{
-let ctx=new (window.AudioContext||window.webkitAudioContext)();
-let o=ctx.createOscillator();let g=ctx.createGain();
-o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(100,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(40,ctx.currentTime+0.8);g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.8);o.start();o.stop(ctx.currentTime+0.8);
-}catch(e){}
+function updateProgress(){
+document.getElementById('progressText').innerText=`خلصت ${done.size} من 4 ملفات`;
+document.getElementById('progressBar').style.width=(done.size*25)+'%';
+}
+function addMsg(t,cls){
+let d=document.createElement('div');d.className='msg '+cls;d.innerText=t;
+document.getElementById('chatBox').appendChild(d);
+document.getElementById('chatBox').scrollTop=9999;
 }
 function openFile(n){
-currentFile=n;step=0;
-let titles={1:"FILE 01 - لعبة الساعة 3 الفجر",2:"FILE 02 - الشات الملعون",3:"FILE 03 - ملف الدارك ويب",4:"FILE 04 - البيت المسكون"};
-document.getElementById( gameTitle ).innerText=titles[n];
-document.getElementById( chatBox ).innerHTML=  ;
-showScreen( game );
-setTimeout(()=>{addMsg(stories[n][0].h, him );},500);
+current=n;step=0;
+document.getElementById('gameTitle').innerText=data[n].title;
+document.getElementById('gameDesc').innerText=data[n].desc;
+document.getElementById('chatBox').innerHTML='';
+document.getElementById('choices').innerHTML='';
+show('game');
+setTimeout(()=>{ addMsg(data[n].steps[0].him,'him'); renderChoices(); },400);
 }
-function addMsg(t,type){
-let d=document.createElement( div );d.className= msg  +type;d.innerText=t;document.getElementById( chatBox ).appendChild(d);
-document.getElementById( chatBox ).scrollTop=9999;
+function renderChoices(){
+let c=document.getElementById('choices');c.innerHTML='';
+data[current].steps[step].choices.forEach(txt=>{
+let b=document.createElement('button');b.className='choice';b.innerText='▸ '+txt;
+b.onclick=()=>{ addMsg(txt,'me'); play(); step++; setTimeout(nextStep,700); };
+c.appendChild(b);
+});
+}
+function nextStep(){
+if(step>=data[current].steps.length){ showJump(); return; }
+addMsg(data[current].steps[step].him,'him'); renderChoices();
 }
 function sendMsg(){
-let inp=document.getElementById( userInput );let v=inp.value.trim();if(!v) return;
-addMsg(v, me );inp.value=  ;playSound();
-step++;
-setTimeout(()=>{
-if(step < stories[currentFile].length){
-let next=stories[currentFile][step];
-addMsg(next.h||next.m, him );
-}else{
-showJump();
-}
-},800);
+let inp=document.getElementById('userInput');let v=inp.value.trim();if(!v) return;
+addMsg(v,'me');inp.value='';play();step++;setTimeout(nextStep,700);
 }
 function showJump(){
-document.getElementById( jump ).classList.add( show );
-playSound();playSound();
-if(navigator.vibrate) navigator.vibrate([200,100,200,100,500]);
+document.getElementById('jumpText').innerText=data[current].jump;
+document.getElementById('jump').classList.add('show');
+play();play(); if(navigator.vibrate) navigator.vibrate([200,100,300,100,500]);
 }
-function hideJump(){
-document.getElementById( jump ).classList.remove( show );
-alert( عاش يا بطل.. خلصت الملف ده 💀\nجرب الملف اللي بعده.. لو قلبك لسه شغال );
-showScreen( files );
+function finishFile(){
+document.getElementById('jump').classList.remove('show');
+done.add(current);
+document.getElementById('done'+current).style.display='inline-block';
+if(done.size>=4){ show('end'); }
+else{ alert('عاش يا بطل.. خلصت '+data[current].title+' 💀\nفاضل '+(4-done.size)+' ملفات.. كمل لو تقدر'); show('files'); }
 }
+function play(){
+try{
+let ctx=new (window.AudioContext||window.webkitAudioContext)();
+let o=ctx.createOscillator(),g=ctx.createGain();
+o.connect(g);g.connect(ctx.destination);
+o.frequency.setValueAtTime(120,ctx.currentTime);
+o.frequency.exponentialRampToValueAtTime(35,ctx.currentTime+0.7);
+g.gain.setValueAtTime(0.25,ctx.currentTime);
+g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.7);
+o.start();o.stop(ctx.currentTime+0.7);
+}catch(e){}
+if(navigator.vibrate) navigator.vibrate(120);
+}
+document.getElementById('userInput').addEventListener('keydown',e=>{if(e.key==='Enter') sendMsg();});
 </script>
 </body>
 </html>
