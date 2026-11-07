@@ -4,16 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050505">
+<link rel="manifest" href="manifest.json">
 <title>HELL OF ALMOZAG</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050505;color:#fff;font-family:Arial,sans-serif;touch-action:none}
 #stage{position:fixed;inset:0;width:100vw;height:100dvh;overflow:hidden;background:#050505}
 @media (orientation:portrait){
  body.playing #stage{
-  width:100dvh;height:100vw;left:0;top:0;right:auto;bottom:auto;
+  width:100dvh !important;height:100vw !important;left:0;top:0;right:auto;bottom:auto;
   transform-origin:top left;
-  transform:rotate(90deg) translateY(-100%);
+  transform:rotate(90deg) translateY(-100%) !important;
  }
+ body.playing #rotateNotice{display:flex !important}
 }
 #game{position:fixed;inset:0}canvas{display:block}
 #vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse,transparent 35%,rgba(0,0,0,.72) 100%);z-index:2}
@@ -31,12 +33,6 @@ p{color:#bbb;line-height:1.7;font-size:14px}
 #controls{position:fixed;inset:0;z-index:6;pointer-events:none;display:none}
 #rotateNotice{display:none;position:fixed;inset:0;z-index:20;background:#030303f5;align-items:center;justify-content:center;padding:24px;text-align:center}
 .rotateCard{max-width:340px;border:1px solid #9b1111;background:#100707;border-radius:18px;padding:25px;box-shadow:0 0 28px #9005}
-@media (orientation:portrait){
- body.playing #rotateNotice{display:none}
-}
-@media (orientation:landscape){
- body.playing #rotateNotice{display:none}
-}
 #stickBase{position:absolute;bottom:28px;left:22px;width:112px;height:112px;border:2px solid #ffffff55;background:#1118;border-radius:50%;pointer-events:auto}
 #stick{position:absolute;width:46px;height:46px;left:31px;top:31px;border-radius:50%;background:#d71919cc;border:2px solid #ff7777}
 #lookArea{position:absolute;right:0;top:25%;width:58%;height:65%;pointer-events:auto}
@@ -88,16 +84,16 @@ p{color:#bbb;line-height:1.7;font-size:14px}
 </div></div>
 <div id="end"><div class="panel"><h1 id="endTitle">انتهت اللعبة</h1><p id="endText"></p><button class="mainbtn" onclick="location.reload()">العب من جديد</button></div></div>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 
-const mount=document.getElementById('game');
+const mount=document.getElementById("game");
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x030303);scene.fog=new THREE.FogExp2(0x050505,.047);
 const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,90);
 camera.position.set(0,1.65,8);
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
 function resizeGame(){
- const r=document.getElementById('stage').getBoundingClientRect();
+ const r=document.getElementById("stage").getBoundingClientRect();
  const w=Math.max(1,r.width),h=Math.max(1,r.height);
  renderer.setSize(w,h,false);
  camera.aspect=w/h;camera.updateProjectionMatrix();
@@ -121,36 +117,29 @@ const mats={
 function box(x,y,z,w,h,d,mat,cast=true){
  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;scene.add(m);return m;
 }
-// Main corridor and connected side alcoves
 box(0,-.15,-5,9,.3,38,mats.floor,false);
 box(0,3.25,-5,9,.3,38,mats.ceiling,false);
 box(-4.5,1.5,-5,.3,3,38,mats.wall);
 box(4.5,1.5,-5,.3,3,38,mats.wall);
 box(0,1.5,13,9,3,.3,mats.wall);
 box(0,1.5,-23,9,3,.3,mats.wall);
-// cross walls leave a central doorway
 for(const z of [-1,-8,-15]){box(-2.85,1.5,z,3.3,3,.35,mats.wall);box(2.85,1.5,z,3.3,3,.35,mats.wall);}
 for(const z of [-4,-11,-18]){box(-2.7,1.5,z,3.6,3,.3,mats.wall);box(2.7,1.5,z,3.6,3,.3,mats.wall);}
 for(let z=10;z>-22;z-=5){
  const lamp=new THREE.PointLight(0x9aa5b8,.45,7);lamp.position.set(0,2.75,z);scene.add(lamp);
  const fixture=box(0,3.02,z,.65,.08,.35,new THREE.MeshStandardMaterial({color:0x777777,emissive:0x222222}),false);
 }
-// pipes and wall details
 for(let z=9;z>-22;z-=3){box(-4.25,2.65,z,.12,.12,2.4,mats.trim,false);box(4.25,2.65,z,.12,.12,2.4,mats.trim,false);}
-// scattered crates
 const crateMat=new THREE.MeshStandardMaterial({color:0x29201b,roughness:1});
 box(-2.9,.55,4,1.2,1.1,1.2,crateMat);box(2.8,.45,-10,1.1,.9,1.1,crateMat);box(-2.8,.6,-17,1.3,1.2,1.3,crateMat);
-// Exit door at far end
 const exitDoor=box(0,1.45,-21.9,2.3,2.8,.25,mats.door);
 const exitGlow=new THREE.PointLight(0xff0909,1.8,5);exitGlow.position.set(0,2,-21);scene.add(exitGlow);
-// Key floating on a pedestal
 box(-2.6,.35,-13, .7,.7,.7,crateMat);
 const key=new THREE.Group();
 const ring=new THREE.Mesh(new THREE.TorusGeometry(.19,.055,8,18),new THREE.MeshStandardMaterial({color:0xffbf35,metalness:.7,roughness:.3}));
 key.add(ring);const shaft=new THREE.Mesh(new THREE.BoxGeometry(.08,.48,.08),new THREE.MeshStandardMaterial({color:0xffbf35,metalness:.7}));shaft.position.y=-.28;key.add(shaft);
 key.position.set(-2.6,1.05,-13);scene.add(key);
 const keyLight=new THREE.PointLight(0xffa51b,1.4,3);keyLight.position.copy(key.position);scene.add(keyLight);
-// Monster - stylized shadow creature, intentionally non-graphic
 const monster=new THREE.Group();
 const dark=new THREE.MeshStandardMaterial({color:0x050506,roughness:1});
 const body=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.95,5,8),dark);body.position.y=1.05;monster.add(body);
@@ -162,58 +151,66 @@ const monsterLamp=new THREE.PointLight(0x8b0000,.8,3);monster.add(monsterLamp);m
 let started=false,hasKey=false,ended=false,flashOn=true,run=false;
 let yaw=0,pitch=0,moveX=0,moveY=0,joyId=null,lastTouch=null;
 const keys={};
-const playerRadius=.38;
-function msg(t){const el=document.getElementById('message');el.textContent=t;el.style.opacity=1;clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.style.opacity=0,2100);}
-function endGame(win){if(ended)return;ended=true;document.getElementById('end').style.display='flex';document.getElementById('endTitle').textContent=win?'نجوت من الجحيم 👑':'لقد أمسك بك الظل';document.getElementById('endText').textContent=win?'وجدت طريق الخروج ونجوت من المبنى المهجور.':'انتهت محاولتك هذه المرة. حاول مرة أخرى وابحث عن المفتاح.';}
-function setFlash(){flashOn=!flashOn;flashlight.visible=flashOn;document.getElementById('lightBtn').textContent=flashOn?'الكشاف: ON':'الكشاف: OFF';}
-document.getElementById('lightBtn').addEventListener('click',setFlash);
-document.getElementById('runBtn').addEventListener('touchstart',e=>{e.preventDefault();run=true;});
-document.getElementById('runBtn').addEventListener('touchend',()=>run=false);
-document.getElementById('runBtn').addEventListener('mousedown',()=>run=true);
-document.getElementById('runBtn').addEventListener('mouseup',()=>run=false);
+function msg(t){const el=document.getElementById("message");el.textContent=t;el.style.opacity=1;clearTimeout(msg.timer);msg.timer=setTimeout(()=>el.style.opacity=0,2100);}
+function endGame(win){if(ended)return;ended=true;document.getElementById("end").style.display="flex";document.getElementById("endTitle").textContent=win?"نجوت من الجحيم 👑":"لقد أمسك بك الظل";document.getElementById("endText").textContent=win?"وجدت طريق الخروج ونجوت من المبنى المهجور.":"انتهت محاولتك هذه المرة. حاول مرة أخرى وابحث عن المفتاح.";}
+function setFlash(){flashOn=!flashOn;flashlight.visible=flashOn;document.getElementById("lightBtn").textContent=flashOn?"الكشاف: ON":"الكشاف: OFF";}
+document.getElementById("lightBtn").addEventListener("click",setFlash);
+document.getElementById("runBtn").addEventListener("touchstart",e=>{e.preventDefault();run=true;});
+document.getElementById("runBtn").addEventListener("touchend",()=>run=false);
+document.getElementById("runBtn").addEventListener("mousedown",()=>run=true);
+document.getElementById("runBtn").addEventListener("mouseup",()=>run=false);
 function interact(){
  if(!started||ended)return;
  const p=camera.position;
- if(!hasKey&&p.distanceTo(key.position)<2.2){hasKey=true;scene.remove(key);scene.remove(keyLight);document.getElementById('status').textContent='المفتاح: 1/1';document.getElementById('objective').textContent='المهمة: وصلت للمفتاح! ارجع إلى باب الخروج.';msg('حصلت على المفتاح… ارجع لباب الخروج!');return;}
+ if(!hasKey&&p.distanceTo(key.position)<2.2){hasKey=true;scene.remove(key);scene.remove(keyLight);document.getElementById("status").textContent="المفتاح: 1/1";document.getElementById("objective").textContent="المهمة: وصلت للمفتاح! ارجع إلى باب الخروج.";msg("حصلت على المفتاح… ارجع لباب الخروج!");return;}
  if(p.distanceTo(exitDoor.position)<2.7){
-  if(hasKey)endGame(true);else msg('الباب مقفول… دور على المفتاح الأحمر أولًا.');
- }else msg('لا يوجد شيء يمكن استخدامه هنا.');
+  if(hasKey)endGame(true);else msg("الباب مقفول… دور على المفتاح الأحمر أولًا.");
+ }else msg("لا يوجد شيء يمكن استخدامه هنا.");
 }
-addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')interact();if(e.code==='KeyF')setFlash();});
-addEventListener('keyup',e=>{keys[e.code]=false;});
-renderer.domElement.addEventListener('click',()=>{if(started&&innerWidth>800)renderer.domElement.requestPointerLock?.();});
-addEventListener('mousemove',e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.25,Math.min(1.25,pitch));}});
-const base=document.getElementById('stickBase'),stick=document.getElementById('stick');
-base.addEventListener('pointerdown',e=>{joyId=e.pointerId;base.setPointerCapture(joyId);joy(e);});
-base.addEventListener('pointermove',e=>{if(e.pointerId===joyId)joy(e);});
+addEventListener("keydown",e=>{keys[e.code]=true;if(e.code==="KeyE")interact();if(e.code==="KeyF")setFlash();});
+addEventListener("keyup",e=>{keys[e.code]=false;});
+renderer.domElement.addEventListener("click",()=>{if(started&&innerWidth>800)renderer.domElement.requestPointerLock?.();});
+addEventListener("mousemove",e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.25,Math.min(1.25,pitch));}});
+const base=document.getElementById("stickBase"),stick=document.getElementById("stick");
+base.addEventListener("pointerdown",e=>{joyId=e.pointerId;base.setPointerCapture(joyId);joy(e);});
+base.addEventListener("pointermove",e=>{if(e.pointerId===joyId)joy(e);});
 function joy(e){const r=base.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const len=Math.hypot(dx,dy),max=38;if(len>max){dx=dx/len*max;dy=dy/len*max;}moveX=dx/max;moveY=dy/max;stick.style.transform=`translate(${dx}px,${dy}px)`;}
-function stopJoy(e){if(e.pointerId===joyId){joyId=null;moveX=moveY=0;stick.style.transform='';}}
-base.addEventListener('pointerup',stopJoy);base.addEventListener('pointercancel',stopJoy);
-const look=document.getElementById('lookArea');
-look.addEventListener('pointerdown',e=>{lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};look.setPointerCapture(e.pointerId);});
-look.addEventListener('pointermove',e=>{if(!lastTouch||lastTouch.id!==e.pointerId)return;const dx=e.clientX-lastTouch.x,dy=e.clientY-lastTouch.y;lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};yaw-=dx*.005;pitch-=dy*.004;pitch=Math.max(-1.25,Math.min(1.25,pitch));});
-look.addEventListener('pointerup',()=>lastTouch=null);look.addEventListener('pointercancel',()=>lastTouch=null);
-document.getElementById('soundBtn').addEventListener('click',()=>{document.getElementById('soundBtn').textContent='الصوت: مؤثرات بسيطة';msg('الصوت المحيطي غير مفعل في هذه النسخة التجريبية.');});
-document.getElementById('startBtn').addEventListener('click',async()=>{
- started=true;
- document.body.classList.add('playing');
- document.getElementById('start').style.display='none';
- document.getElementById('controls').style.display='block';
+function stopJoy(e){if(e.pointerId===joyId){joyId=null;moveX=moveY=0;stick.style.transform="";}}
+base.addEventListener("pointerup",stopJoy);base.addEventListener("pointercancel",stopJoy);
+const look=document.getElementById("lookArea");
+look.addEventListener("pointerdown",e=>{lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};look.setPointerCapture(e.pointerId);});
+look.addEventListener("pointermove",e=>{if(!lastTouch||lastTouch.id!==e.pointerId)return;const dx=e.clientX-lastTouch.x,dy=e.clientY-lastTouch.y;lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};yaw-=dx*.005;pitch-=dy*.004;pitch=Math.max(-1.25,Math.min(1.25,pitch));});
+look.addEventListener("pointerup",()=>lastTouch=null);look.addEventListener("pointercancel",()=>lastTouch=null);
+document.getElementById("soundBtn").addEventListener("click",()=>{document.getElementById("soundBtn").textContent="الصوت: مؤثرات بسيطة";msg("الصوت المحيطي غير مفعل في هذه النسخة التجريبية.");});
 
- // Android browsers may allow landscape lock only after fullscreen/user action.
- try{
-   if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
- }catch(e){}
- try{
-   if(screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
- }catch(e){
-   // If the browser does not support locking, the rotate notice guides the player.
- }
+async function startGameNow(){
+ started=true;
+ document.body.classList.add("playing");
+ document.getElementById("start").style.display="none";
+ document.getElementById("controls").style.display="block";
+ document.getElementById("rotateNotice").style.display="none";
+ try{ if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen(); }catch(e){}
+ try{ if(screen.orientation && screen.orientation.lock) await screen.orientation.lock("landscape"); }catch(e){}
  if(innerWidth>900)renderer.domElement.requestPointerLock?.();
- msg('ابحث عن المفتاح الذهبي… وانتبه للظل.');
+ msg("ابحث عن المفتاح الذهبي… وانتبه للظل.");
+}
+
+document.getElementById("startBtn").addEventListener("click",()=>{
+ if(window.innerHeight > window.innerWidth){
+   document.getElementById("rotateNotice").style.display="flex";
+   document.getElementById("rotateNotice").innerHTML='<div class="rotateCard"><div style="font-size:54px">📱 ↻</div><h2>لف الموبايل بالعرض</h2><p>لف موبايلك دلوقتي عشان اللعبة تفتح بالعرض</p></div>';
+   let check=setInterval(()=>{
+     if(window.innerWidth > window.innerHeight){
+       clearInterval(check);
+       startGameNow();
+     }
+   },400);
+   return;
+ }
+ startGameNow();
 });
+
 function blocked(x,z){
- // Corridor bounds and a few crate obstacles
  if(x< -4||x>4||z< -22.5||z>12.5)return true;
  const obstacles=[[-2.9,4,.85],[2.8,-10,.8],[-2.8,-17,.9]];
  return obstacles.some(([ox,oz,r])=>Math.hypot(x-ox,z-oz)<r+.35);
@@ -231,8 +228,7 @@ function animate(){
   const nx=camera.position.x+dx,nz=camera.position.z+dz;
   if(!blocked(nx,camera.position.z))camera.position.x=nx;
   if(!blocked(camera.position.x,nz))camera.position.z=nz;
-  camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;
-  // The creature begins hunting after the key is collected.
+  camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch;
   if(hasKey){
    const dxp=camera.position.x-monster.position.x,dzp=camera.position.z-monster.position.z;
    const dist=Math.hypot(dxp,dzp);
@@ -246,10 +242,10 @@ function animate(){
  renderer.render(scene,camera);
 }
 animate();
-addEventListener('resize',()=>{setTimeout(resizeGame,80);});
-addEventListener('orientationchange',()=>{setTimeout(resizeGame,180);});
+addEventListener("resize",()=>{setTimeout(resizeGame,80);});
+addEventListener("orientationchange",()=>{setTimeout(resizeGame,180);});
 setTimeout(resizeGame,250);
 </script>
-</div>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
 </body>
 </html>
