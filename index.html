@@ -1,225 +1,770 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="screen-orientation" content="landscape">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#050000">
 <meta name="mobile-web-app-capable" content="yes">
-<title>HELL OF ALMOZAG - بالعرض</title>
+<title>HELL OF ALMOZAG X</title>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#000;overflow:hidden;font-family:Arial,sans-serif;color:#fff;user-select:none}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:white;font-family:Arial;overflow:hidden}
 #game{position:fixed;inset:0;width:100%;height:100%;display:block}
-#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.85) 100%);z-index:5}
-#blood{position:fixed;inset:0;pointer-events:none;opacity:0;transition:.3s;background:radial-gradient(ellipse at center,transparent 40%,rgba(180,0,0,.6) 100%);z-index:6}
-#hud{position:fixed;top:0;left:0;right:0;z-index:10;padding:10px;display:flex;justify-content:space-between;pointer-events:none;text-shadow:0 2px 6px #000}
-.hud-box{background:rgba(0,0,0,.65);border:1px solid #333;border-radius:12px;padding:8px 12px;backdrop-filter:blur(4px);min-width:160px}
-#hpBar{width:150px;height:12px;background:#222;border-radius:20px;overflow:hidden;margin-top:4px}
-#hpFill{width:78%;height:100%;background:linear-gradient(90deg,#ff0000,#ff4444);transition:.3s}
-#stBar{width:150px;height:8px;background:#222;border-radius:20px;overflow:hidden;margin-top:4px}
-#stFill{width:62%;height:100%;background:#ffcc00;transition:.3s}
-#batBar{width:120px;height:8px;background:#222;border-radius:20px;overflow:hidden;margin-top:4px}
-#batFill{width:64%;height:100%;background:#00e5ff;transition:.3s}
-#cross{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;font-size:24px;color:rgba(255,255,255,.9);pointer-events:none;text-shadow:0 0 8px #000}
-#obj{position:fixed;bottom:110px;left:10px;z-index:10;background:rgba(0,0,0,.7);padding:8px 12px;border-radius:10px;border-right:3px solid #ff0000;font-size:13px}
-#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(0,0,0,.88);padding:14px 20px;border-radius:12px;border:1px solid #ff0000;display:none;text-align:center;font-size:16px;max-width:85%;line-height:1.6}
-#interact{position:fixed;bottom:180px;left:50%;transform:translateX(-50%);z-index:10;background:#ff0000;color:#fff;padding:10px 18px;border-radius:25px;display:none;font-weight:bold;box-shadow:0 0 20px rgba(255,0,0,.6)}
-#joy{position:fixed;bottom:20px;left:18px;width:110px;height:110px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.3);border-radius:50%;z-index:15;touch-action:none}
-#knob{position:absolute;top:50%;left:50%;width:48px;height:48px;background:rgba(255,255,255,.75);border-radius:50%;transform:translate(-50%,-50%)}
-#btns{position:fixed;bottom:20px;right:15px;z-index:15;display:flex;gap:10px}
-.btn{width:62px;height:62px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(0,0,0,.55);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.btn:active{background:#ff0000}
+#vignette,#blood{position:fixed;inset:0;pointer-events:none;z-index:4}
+#vignette{background:radial-gradient(ellipse,transparent 30%,#000d 100%)}
+#blood{opacity:0;background:radial-gradient(ellipse,transparent 30%,#b0000080 100%);transition:.3s}
+#hud{position:fixed;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;z-index:8;pointer-events:none;gap:8px}
+.panel{background:#000b;border:1px solid #6d2020;border-radius:10px;padding:8px 11px;min-width:125px;font-size:12px}
+.bar{height:8px;background:#292929;border-radius:20px;overflow:hidden;margin-top:4px}
+.fill{height:100%;width:100%;transition:width .2s}
+#hpFill{background:#e00000}
+#stFill{background:#ffbf00}
+#batFill{background:#00d9ff}
+#cross{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:23px;z-index:5;pointer-events:none;text-shadow:0 0 8px red}
+#objective{position:fixed;bottom:125px;left:10px;background:#000c;padding:9px 12px;border-right:3px solid red;border-radius:7px;z-index:8;font-size:12px}
+#keys{position:fixed;top:92px;right:10px;background:#000b;padding:8px;border-radius:8px;z-index:8}
+#message{position:fixed;z-index:30;top:50%;left:50%;transform:translate(-50%,-50%);background:#090000f2;border:1px solid red;border-radius:12px;padding:18px;width:85%;max-width:350px;text-align:center;display:none;line-height:1.8}
+#joy{position:fixed;bottom:15px;left:15px;width:105px;height:105px;border-radius:50%;border:2px solid #ffffff55;background:#ffffff18;z-index:12;touch-action:none}
+#knob{position:absolute;width:44px;height:44px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#ffffffbb}
+#buttons{position:fixed;bottom:15px;right:12px;display:flex;gap:7px;z-index:12}
+.btn{width:53px;height:53px;border-radius:50%;border:2px solid #ffffff66;background:#000b;color:white;font-size:20px;display:grid;place-items:center;touch-action:none}
+.btn:active,.btn.active{background:#a00000}
+#btnFlash{border-color:#00cfff}
 #btnRun{border-color:#ffcc00}
-#btnFlash{border-color:#00e5ff}
-#keys{position:fixed;top:70px;right:10px;z-index:10;background:rgba(0,0,0,.6);padding:6px 10px;border-radius:20px;font-size:13px}
-#menu{position:fixed;inset:0;z-index:30;background:linear-gradient(rgba(0,0,0,.3),#000),url('https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=1200') center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-#menu h1{font-size:48px;letter-spacing:2px;color:#ff0000;text-shadow:0 0 20px #ff0000,0 4px 0 #000;line-height:1.1}
-#menu p{margin:12px 0 20px;color:#ccc;font-size:16px;line-height:1.7}
-#startBtn{background:#ff0000;color:#fff;border:none;padding:16px 45px;font-size:22px;font-weight:bold;border-radius:30px;box-shadow:0 0 25px rgba(255,0,0,.7);cursor:pointer}
-#menu small{display:block;margin-top:18px;color:#aaa;font-size:13px;line-height:1.7}
-/* ===== LANDSCAPE ===== */
-#rotateMsg{display:none;position:fixed;inset:0;z-index:999;background:#000;color:#fff;text-align:center;flex-direction:column;align-items:center;justify-content:center;font-size:24px;font-weight:bold;gap:15px;padding:20px}
-#rotateMsg span{font-size:70px;animation:rot 1.2s infinite;display:block}
-@keyframes rot{0%{transform:rotate(0)}50%{transform:rotate(90deg)}100%{transform:rotate(0)}}
-@media (orientation: portrait) and (max-width:900px){
-  #rotateMsg{display:flex}
+#menu,#endScreen{position:fixed;inset:0;z-index:40;background:linear-gradient(#0008,#000e),url("https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=1400") center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+h1{font-size:clamp(30px,7vw,55px);color:red;text-shadow:0 0 18px red;line-height:1.15}
+.subtitle{color:#ddd;margin:15px 0;line-height:1.8;font-size:14px}
+.mainBtn{border:0;background:#c00000;color:white;padding:14px 35px;border-radius:30px;font-weight:bold;font-size:19px;box-shadow:0 0 20px #f00000;cursor:pointer;margin:5px}
+#endScreen{display:none;background:#050000ed}
+#rotate{display:none;position:fixed;inset:0;z-index:100;background:black;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-size:22px;gap:20px}
+#rotate span{font-size:65px}
+@media(orientation:portrait) and (max-width:900px){
+#rotate{display:flex}
 }
-@media (orientation: landscape){
-  #hud{padding:5px 10px}
-  #menu h1{font-size:36px}
-  #menu p{font-size:14px}
-  #joy{width:95px;height:95px;bottom:12px;left:12px}
-  #btns{bottom:12px;right:12px}
-  .btn{width:54px;height:54px;font-size:19px}
-  #obj{bottom:85px}
-  #keys{top:65px}
-  #startBtn{padding:13px 35px;font-size:19px}
+@media(orientation:landscape){
+.panel{padding:5px 9px}
+#joy{width:90px;height:90px}
+#knob{width:40px;height:40px}
+.btn{width:48px;height:48px}
 }
 </style>
 </head>
+
 <body>
 <canvas id="game"></canvas>
-<div id="vignette"></div><div id="blood"></div>
-<div id="rotateMsg"><span>📱↻</span>اقلب موبايلك بالعرض<div style="font-size:15px;color:#ff4444;font-weight:normal">اللعبة بتشتغل بالعرض بس عشان تبقى احسن 🔥</div></div>
+<div id="vignette"></div>
+<div id="blood"></div>
+
+<div id="rotate">
+<span>📱↻</span>
+اقلب الموبايل بالعرض
+<small>HELL OF ALMOZAG X</small>
+</div>
 
 <div id="hud">
-  <div class="hud-box">
-    <div>🔦 BATTERY <span id="batTxt">64%</span></div>
-    <div id="batBar"><div id="batFill"></div></div>
-    <div style="margin-top:5px">⏱️ <span id="timer">00:00</span> &nbsp; 📍 <span id="loc">WEST WING</span></div>
-  </div>
-  <div class="hud-box" style="text-align:left" dir="ltr">
-    <div>HP <span id="hpTxt">78/100</span> ❤️</div>
-    <div id="hpBar"><div id="hpFill"></div></div>
-    <div style="margin-top:5px">STAMINA <span id="stTxt">62%</span> 🏃</div>
-    <div id="stBar"><div id="stFill"></div></div>
-  </div>
+ <div class="panel">
+  🔦 BATTERY <span id="batText">100%</span>
+  <div class="bar"><div class="fill" id="batFill"></div></div>
+  ⏱️ <span id="timer">00:00</span>
+  <div id="location">WEST WING</div>
+ </div>
+ <div class="panel" dir="ltr">
+  ❤️ HP <span id="hpText">100</span>
+  <div class="bar"><div class="fill" id="hpFill"></div></div>
+  🏃 STAMINA <span id="stText">100%</span>
+  <div class="bar"><div class="fill" id="stFill"></div></div>
+ </div>
 </div>
 
 <div id="cross">+</div>
-<div id="keys">🔑 <span id="keyCount">0</span>/3</div>
-<div id="obj">🎯 المهمة: <span id="objTxt">دور على 3 مفاتيح واهرب</span></div>
-<div id="interact">اضغط E / دوس هنا</div>
-<div id="msg"></div>
+<div id="keys">🔑 <span id="keyText">0</span>/3</div>
+<div id="objective">🎯 اجمع المفاتيح الثلاثة</div>
+<div id="message"></div>
 
 <div id="joy"><div id="knob"></div></div>
-<div id="btns">
-  <div class="btn" id="btnFlash">🔦</div>
-  <div class="btn" id="btnRun">🏃</div>
-  <div class="btn" id="btnJump">⬆️</div>
-  <div class="btn" id="btnAct">✋</div>
+
+<div id="buttons">
+ <button class="btn" id="btnFlash">🔦</button>
+ <button class="btn" id="btnRun">🏃</button>
+ <button class="btn" id="btnJump">⬆️</button>
+ <button class="btn" id="btnAct">✋</button>
 </div>
 
 <div id="menu">
-  <div style="font-size:50px">💀</div>
-  <h1>HELL OF<br>ALMOZAG</h1>
-  <p>تقدر تهرب من القصر ولا هتموت جوه؟ 👻<br>جمع 3 مفاتيح دهبي وافتح الباب الرئيسي</p>
-  <button id="startBtn">▶️ ابدأ اللعب</button>
-  <small>📱 اقلب موبايلك بالعرض قبل ما تلعب<br>🖥️ كمبيوتر: WASD + ماوس + SHIFT للجري + F للكشاف + E للتفاعل<br>📱 موبايل: جويستيك + اسحب للنظر + زرار الكشاف والجري</small>
+ <div style="font-size:55px">💀</div>
+ <h1>HELL OF<br>ALMOZAG X</h1>
+ <div class="subtitle">
+  هل تستطيع الهروب من القصر؟<br>
+  اجمع 3 مفاتيح وافتح باب النجاة.<br>
+  احذر... الوحش يراقبك!
+ </div>
+ <button class="mainBtn" id="start">▶ ابدأ اللعب</button>
+ <button class="mainBtn" id="instructions" style="background:#292929">📖 التعليمات</button>
+ <small style="color:#aaa;margin-top:12px">3D HORROR EXPERIENCE</small>
+</div>
+
+<div id="endScreen">
+ <h1 id="endTitle">GAME OVER</h1>
+ <p class="subtitle" id="endText"></p>
+ <button class="mainBtn" id="restart">🔄 العب من جديد</button>
+ <button class="mainBtn" id="home" style="background:#292929">القائمة الرئيسية</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-let scene,camera,renderer,player={x:0,z:8,y:1.7,hp:78,st:62,bat:64,keys:0,speed:2.4},keys=[],monster,flash,flashOn=true,running=false,move={x:0,z:0},lookX=0,lookY=0,lastTouch=null,joy={x:0,y:0,active:false},time=0,gameStarted=false,monsterSpeed=1.15,scare=false;
-let clock=new THREE.Clock();
-function showMsg(t,ms=2200){let m=document.getElementById('msg');m.innerHTML=t;m.style.display='block';setTimeout(()=>m.style.display='none',ms);}
-async function forceLandscape(){
-  try{ if(screen.orientation && screen.orientation.lock){ await screen.orientation.lock('landscape'); } }catch(e){}
-  if(window.innerHeight>window.innerWidth){ document.getElementById('rotateMsg').style.display='flex'; }
-  else{ document.getElementById('rotateMsg').style.display='none'; }
-}
-window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ if(window.innerHeight>window.innerWidth){ document.getElementById('rotateMsg').style.display='flex'; } else { document.getElementById('rotateMsg').style.display='none'; } },300); });
-window.addEventListener('resize',()=>{ if(window.innerHeight>window.innerWidth && gameStarted){ document.getElementById('rotateMsg').style.display='flex'; } else { document.getElementById('rotateMsg').style.display='none'; } });
 
-function init(){
- scene=new THREE.Scene(); scene.background=new THREE.Color(0x050505); scene.fog=new THREE.Fog(0x000000,0.5,20);
- camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,100);
- renderer=new THREE.WebGLRenderer({canvas:document.getElementById('game'),antialias:true});
- renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true;
- scene.add(new THREE.AmbientLight(0x222233,0.5));
- flash=new THREE.SpotLight(0xfff2cc,1.9,24,0.5,0.4,1); flash.position.set(0,1.7,8); scene.add(flash); scene.add(flash.target);
- let floor=new THREE.Mesh(new THREE.BoxGeometry(30,0.2,30),new THREE.MeshStandardMaterial({color:0x4a3421,roughness:0.9})); floor.position.y=-0.1; scene.add(floor);
- let carpet=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.05,16),new THREE.MeshStandardMaterial({color:0x6a0a0a})); carpet.position.set(0,0.02,0); scene.add(carpet);
- function wall(w,h,d,x,y,z,color=0x2a2a2a){ let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:color,roughness:0.95})); m.position.set(x,y,z); scene.add(m); return m; }
- for(let z=-10;z<=10;z+=2){ wall(0.3,3.2,2,-4,1.6,z,0x3a4a3a); wall(0.3,3.2,2,4,1.6,z,0x3a4a3a); }
- wall(6,3.2,0.3,-7,1.6,-2,0x2e2e3e); wall(6,3.2,0.3,-7,1.6,4,0x2e2e3e); wall(0.3,3.2,6,-10,1.6,1,0x2e2e3e);
- let bed=new THREE.Mesh(new THREE.BoxGeometry(2,0.6,3),new THREE.MeshStandardMaterial({color:0x5a4a35})); bed.position.set(-7,0.4,1); scene.add(bed);
- let pillow=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.25,0.6),new THREE.MeshStandardMaterial({color:0xdddddd})); pillow.position.set(-7,0.8,-0.2); scene.add(pillow);
- let wardrobe=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.4,0.8),new THREE.MeshStandardMaterial({color:0x3a2515})); wardrobe.position.set(-9,1.2,-1.5); scene.add(wardrobe);
- wall(6,3.2,0.3,7,1.6,-2,0x333333); wall(6,3.2,0.3,7,1.6,4,0x333333); wall(0.3,3.2,6,10,1.6,1,0x333333);
- let table=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.1,1.2),new THREE.MeshStandardMaterial({color:0x6b4a2a})); table.position.set(7,0.9,1); scene.add(table);
- // باب خروج احمر
- let exitDoor=new THREE.Mesh(new THREE.BoxGeometry(2,2.8,0.2),new THREE.MeshStandardMaterial({color:0x5a0a0a})); exitDoor.position.set(0,1.4,-10); scene.add(exitDoor);
- function makeKey(x,z){
-   let g=new THREE.Group();
-   let ring=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.05,8,20),new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xffaa00,emissiveIntensity:0.8,metalness:0.9}));
-   let stem=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.45,0.07),new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xffaa00,emissiveIntensity:0.6}));
-   stem.position.y=-0.35; g.add(ring); g.add(stem);
-   let light=new THREE.PointLight(0xffd700,0.9,4); g.add(light);
-   g.position.set(x,1.1,z); scene.add(g); keys.push({group:g,x,z,taken:false});
- }
- makeKey(-7,1); makeKey(7,1); makeKey(0,-6);
- for(let i=0;i<6;i++){ let c=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.35),new THREE.MeshStandardMaterial({color:0xffffff})); c.position.set(-3.5,0.8,-8+i*3); scene.add(c); let l=new THREE.PointLight(0xff6600,0.6,4); l.position.set(-3.5,1.2,-8+i*3); scene.add(l); }
- let mMat=new THREE.MeshStandardMaterial({color:0x050505,roughness:0.2});
- monster=new THREE.Group();
- let mBody=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.6,1.8,8),mMat); mBody.position.y=1.2; monster.add(mBody);
- let mHead=new THREE.Mesh(new THREE.SphereGeometry(0.35,10,10),mMat); mHead.position.y=2.3; monster.add(mHead);
- let eyeMat=new THREE.MeshBasicMaterial({color:0xffff00});
- let e1=new THREE.Mesh(new THREE.SphereGeometry(0.05,8,8),eyeMat); e1.position.set(-0.12,2.35,0.32); monster.add(e1);
- let e2=e1.clone(); e2.position.x=0.12; monster.add(e2);
- monster.position.set(0,0,-8); scene.add(monster);
- let pic=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.6),new THREE.MeshStandardMaterial({color:0x111111})); pic.position.set(-3.8,1.8,0); pic.rotation.y=Math.PI/2; scene.add(pic);
- camera.position.set(player.x,player.y,player.z);
- animate();
+<script>
+"use strict";
+
+/* ===== GAME DATA ===== */
+
+let scene,camera,renderer,monster,flash,clock;
+let gameStarted=false,gameOver=false;
+let flashOn=true,running=false;
+let time=0,lastHit=0,jumpTime=0;
+let yaw=0,pitch=0;
+let joystick={x:0,y:0,active:false};
+let keyboard={x:0,z:0};
+let lastTouch=null;
+let keys=[];
+let walls=[];
+let player={
+ x:0,z:8,y:1.7,
+ hp:100,st:100,bat:100,
+ count:0,speed:3
+};
+let best=Number(localStorage.getItem("almo_best")||0);
+let soundContext=null;
+
+const $=id=>document.getElementById(id);
+
+function message(txt,ms=2200){
+ $("message").innerHTML=txt;
+ $("message").style.display="block";
+ clearTimeout(message.timer);
+ message.timer=setTimeout(()=>{$("message").style.display="none"},ms);
 }
+
+function sound(freq=100,duration=.2,type="sine",volume=.07){
+ try{
+  if(!soundContext)soundContext=new(window.AudioContext||window.webkitAudioContext)();
+  if(soundContext.state==="suspended")soundContext.resume();
+  let o=soundContext.createOscillator();
+  let g=soundContext.createGain();
+  o.type=type;
+  o.frequency.setValueAtTime(freq,soundContext.currentTime);
+  g.gain.setValueAtTime(volume,soundContext.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,soundContext.currentTime+duration);
+  o.connect(g);g.connect(soundContext.destination);
+  o.start();o.stop(soundContext.currentTime+duration);
+ }catch(e){}
+}
+
+/* ===== LANDSCAPE ===== */
+
+async function landscape(){
+ try{
+  if(screen.orientation?.lock)
+   await screen.orientation.lock("landscape");
+ }catch(e){}
+}
+
+/* ===== WORLD ===== */
+
+function material(color,extra={}){
+ return new THREE.MeshStandardMaterial({color,roughness:.85,...extra});
+}
+
+function wall(w,h,d,x,y,z,color=0x292323){
+ let m=new THREE.Mesh(
+  new THREE.BoxGeometry(w,h,d),
+  material(color)
+ );
+ m.position.set(x,y,z);
+ scene.add(m);
+ walls.push({x,z,w,d});
+ return m;
+}
+
+function pointLight(color,intensity,distance,x,y,z){
+ let l=new THREE.PointLight(color,intensity,distance);
+ l.position.set(x,y,z);
+ scene.add(l);
+ return l;
+}
+
+function createWorld(){
+ scene=new THREE.Scene();
+ scene.background=new THREE.Color(0x030303);
+ scene.fog=new THREE.Fog(0x030303,4,24);
+
+ camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100);
+
+ renderer=new THREE.WebGLRenderer({
+  canvas:$("game"),
+  antialias:true
+ });
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+ renderer.setSize(innerWidth,innerHeight);
+ renderer.shadowMap.enabled=true;
+
+ scene.add(new THREE.AmbientLight(0x333344,.65));
+
+ let floor=new THREE.Mesh(
+  new THREE.PlaneGeometry(30,30),
+  material(0x30251e)
+ );
+ floor.rotation.x=-Math.PI/2;
+ floor.position.y=-.11;
+ scene.add(floor);
+
+ // Main mansion walls
+ wall(20,3.5,.4,0,1.75,-10);
+ wall(20,3.5,.4,0,1.75,10);
+ wall(.4,3.5,20,-10,1.75,0);
+ wall(.4,3.5,20,10,1.75,0);
+
+ // Internal walls with openings
+ wall(.3,3.5,7,-4,1.75,-6.5);
+ wall(.3,3.5,6,-4,1.75,7);
+ wall(.3,3.5,6,4,1.75,-7);
+ wall(.3,3.5,7,4,1.75,6.5);
+ wall(6,3.5,.3,-7,1.75,-2);
+ wall(6,3.5,.3,7,1.75,-2);
+ wall(5,3.5,.3,-7,1.75,4);
+ wall(5,3.5,.3,7,1.75,4);
+
+ // Carpet
+ let carpet=new THREE.Mesh(
+  new THREE.PlaneGeometry(2,15),
+  material(0x570707)
+ );
+ carpet.rotation.x=-Math.PI/2;
+ carpet.position.set(0,.01,0);
+ scene.add(carpet);
+
+ // Furniture
+ function furniture(x,z,w,d,h,color){
+  let m=new THREE.Mesh(
+   new THREE.BoxGeometry(w,h,d),
+   material(color)
+  );
+  m.position.set(x,h/2,z);
+  scene.add(m);
+ }
+ furniture(-7,0,2,3,.7,0x49301f);
+ furniture(7,0,2,2,.8,0x604322);
+ furniture(-7,-7,2,1,2.3,0x382317);
+ furniture(7,7,2,1,2,0x382317);
+
+ // Exit door
+ let door=new THREE.Mesh(
+  new THREE.BoxGeometry(2,2.8,.25),
+  material(0x7d0808,{emissive:0x270000})
+ );
+ door.position.set(0,1.4,-9.65);
+ scene.add(door);
+
+ // Lights
+ for(let z=-8;z<=8;z+=4){
+  pointLight(0xff5500,.8,5,-3.5,2.5,z);
+  pointLight(0xff5500,.8,5,3.5,2.5,z);
+ }
+
+ // Keys
+ createKey(-7,1);
+ createKey(7,1);
+ createKey(0,-6);
+
+ // Monster
+ monster=new THREE.Group();
+
+ let black=material(0x080808);
+ let body=new THREE.Mesh(
+  new THREE.CylinderGeometry(.38,.55,1.7,9),
+  black
+ );
+ body.position.y=1.15;
+ monster.add(body);
+
+ let head=new THREE.Mesh(
+  new THREE.SphereGeometry(.34,12,12),
+  black
+ );
+ head.position.y=2.2;
+ monster.add(head);
+
+ let eyeMat=new THREE.MeshBasicMaterial({color:0xff0000});
+ for(let x of [-.13,.13]){
+  let eye=new THREE.Mesh(
+   new THREE.SphereGeometry(.055,8,8),
+   eyeMat
+  );
+  eye.position.set(x,2.25,.29);
+  monster.add(eye);
+ }
+
+ monster.position.set(0,0,-7);
+ scene.add(monster);
+
+ flash=new THREE.SpotLight(0xffffff,2,22,.48,.45,1);
+ scene.add(flash);
+ scene.add(flash.target);
+
+ camera.position.set(player.x,player.y,player.z);
+}
+
+function createKey(x,z){
+ let g=new THREE.Group();
+
+ let gold=material(0xffc400,{
+  emissive:0x885500,
+  emissiveIntensity:.8,
+  metalness:.7
+ });
+
+ let ring=new THREE.Mesh(
+  new THREE.TorusGeometry(.18,.045,8,20),
+  gold
+ );
+
+ let stem=new THREE.Mesh(
+  new THREE.BoxGeometry(.07,.45,.07),
+  gold
+ );
+ stem.position.y=-.32;
+
+ g.add(ring,stem);
+ g.position.set(x,1,z);
+ scene.add(g);
+
+ let light=new THREE.PointLight(0xffcc00,.8,3);
+ g.add(light);
+
+ keys.push({group:g,x,z,taken:false});
+}
+
+/* ===== COLLISION ===== */
+
+function blocked(x,z){
+ const radius=.35;
+ if(x<-9.3||x>9.3||z<-9.3||z>9.3)return true;
+
+ for(const w of walls){
+  if(
+   x+radius>w.x-w.w/2 &&
+   x-radius<w.x+w.w/2 &&
+   z+radius>w.z-w.d/2 &&
+   z-radius<w.z+w.d/2
+  )return true;
+ }
+ return false;
+}
+
+function movePlayer(dx,dz){
+ if(!blocked(player.x+dx,player.z))player.x+=dx;
+ if(!blocked(player.x,player.z+dz))player.z+=dz;
+}
+
+/* ===== PLAYER ===== */
+
+function updatePlayer(dt){
+ let speed=player.speed;
+
+ if(running&&player.st>0){
+  speed*=1.75;
+  player.st=Math.max(0,player.st-dt*18);
+ }else{
+  player.st=Math.min(100,player.st+dt*9);
+ }
+
+ let fx=keyboard.x+joystick.x;
+ let fz=keyboard.z+joystick.y;
+ let len=Math.hypot(fx,fz);
+
+ if(len>1){fx/=len;fz/=len;}
+
+ let dx=(-Math.sin(yaw)*fz+Math.cos(yaw)*fx)*speed*dt;
+ let dz=(-Math.cos(yaw)*fz-Math.sin(yaw)*fx)*speed*dt;
+
+ movePlayer(dx,dz);
+
+ if(jumpTime>0){
+  jumpTime-=dt;
+  player.y=1.7+Math.sin((1-jumpTime/.45)*Math.PI)*.75;
+ }else player.y=1.7;
+
+ camera.position.set(
+  player.x,
+  player.y+Math.sin(time*9)*.018,
+  player.z
+ );
+
+ camera.rotation.order="YXZ";
+ camera.rotation.y=yaw;
+ camera.rotation.x=pitch;
+
+ flash.position.copy(camera.position);
+ flash.target.position.set(
+  player.x-Math.sin(yaw)*5,
+  player.y+Math.sin(pitch)*5,
+  player.z-Math.cos(yaw)*5
+ );
+
+ flash.visible=flashOn;
+
+ if(flashOn){
+  player.bat=Math.max(0,player.bat-dt*.75);
+  if(player.bat===0)flashOn=false;
+ }
+}
+
+/* ===== KEYS ===== */
+
+function updateKeys(dt){
+ keys.forEach(k=>{
+  if(k.taken)return;
+
+  k.group.rotation.y+=dt*2;
+  k.group.position.y=1+Math.sin(time*2+k.x)*.15;
+
+  if(Math.hypot(player.x-k.x,player.z-k.z)<1.15){
+   k.taken=true;
+   k.group.visible=false;
+   player.count++;
+
+   $("keyText").textContent=player.count;
+
+   sound(750,.2,"sine",.1);
+
+   if(player.count===3){
+    $("objective").textContent="🚪 اذهب إلى باب الخروج!";
+    message("🔑 جمعت كل المفاتيح! اهرب إلى الباب!");
+   }else{
+    message("🔑 حصلت على مفتاح! باقي "+(3-player.count));
+   }
+  }
+ });
+}
+
+/* ===== MONSTER AI ===== */
+
+function updateMonster(dt){
+ let dx=player.x-monster.position.x;
+ let dz=player.z-monster.position.z;
+ let distance=Math.hypot(dx,dz);
+
+ let speed=1.05+player.count*.22;
+
+ if(distance>1.1){
+  let mx=dx/distance*speed*dt;
+  let mz=dz/distance*speed*dt;
+
+  // Avoid getting stuck inside walls
+  if(!blocked(monster.position.x+mx,monster.position.z))
+   monster.position.x+=mx;
+
+  if(!blocked(monster.position.x,monster.position.z+mz))
+   monster.position.z+=mz;
+
+  monster.lookAt(player.x,1.3,player.z);
+ }
+
+ monster.position.y=Math.sin(time*5)*.035;
+
+ if(distance<1.45&&time-lastHit>2){
+  lastHit=time;
+  player.hp=Math.max(0,player.hp-15);
+
+  $("blood").style.opacity=1;
+  setTimeout(()=>$("blood").style.opacity=0,500);
+
+  sound(65,.5,"sawtooth",.15);
+  message("💀 الوحش اقترب منك! اهرب!");
+
+  if(player.hp<=0)finish(false);
+ }
+}
+
+/* ===== INTERACTION ===== */
+
+function interact(){
+ if(gameOver||!gameStarted)return;
+
+ let d=Math.hypot(player.x,player.z+9.5);
+
+ if(d<2.3){
+  if(player.count===3){
+   finish(true);
+  }else{
+   message("🔒 الباب مقفول! تحتاج "+(3-player.count)+" مفاتيح");
+  }
+  return;
+ }
+
+ let near=keys.find(k=>!k.taken&&Math.hypot(player.x-k.x,player.z-k.z)<2);
+
+ if(near)message("اقترب من المفتاح لجمعه");
+ else message("لا يوجد شيء للتفاعل هنا");
+}
+
+function finish(win){
+ if(gameOver)return;
+ gameOver=true;
+ gameStarted=false;
+ running=false;
+
+ if(win){
+  $("endTitle").textContent="YOU ESCAPED!";
+  $("endText").innerHTML="🏆 نجحت في الهروب من القصر!<br>الوقت: "+formatTime(time);
+  if(best===0||time<best){
+   best=time;
+   localStorage.setItem("almo_best",best);
+  }
+  sound(650,.5);
+ }else{
+  $("endTitle").textContent="GAME OVER";
+  $("endText").innerHTML="💀 الوحش أمسك بك!<br>حاول مرة أخرى.";
+  sound(55,.8,"sawtooth");
+ }
+
+ $("endScreen").style.display="flex";
+}
+
+function formatTime(t){
+ let m=Math.floor(t/60);
+ let s=Math.floor(t%60);
+ return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+/* ===== HUD ===== */
+
+function updateHUD(){
+ $("hpText").textContent=player.hp;
+ $("hpFill").style.width=player.hp+"%";
+
+ $("stText").textContent=Math.floor(player.st)+"%";
+ $("stFill").style.width=player.st+"%";
+
+ $("batText").textContent=Math.floor(player.bat)+"%";
+ $("batFill").style.width=player.bat+"%";
+
+ $("timer").textContent=formatTime(time);
+
+ $("location").textContent=
+  player.x<-4?"BEDROOM":
+  player.x>4?"KITCHEN":
+  player.z<-4?"NORTH WING":"WEST WING";
+}
+
+/* ===== MAIN LOOP ===== */
+
 function animate(){
  requestAnimationFrame(animate);
- if(!gameStarted) return;
- let dt=Math.min(clock.getDelta(),0.05); time+=dt;
- let speed=player.speed*(running?1.9:1);
- let sin=Math.sin(lookX),cos=Math.cos(lookX);
- let mx=(move.x+joy.x)*speed*dt, mz=(move.z+joy.y)*speed*dt;
- player.x+= -sin*mz + cos*mx; player.z+= -cos*mz - sin*mx;
- player.x=Math.max(-9.5,Math.min(9.5,player.x)); player.z=Math.max(-9.5,Math.min(9.5,player.z));
- camera.position.set(player.x,player.y+Math.sin(time*8)*0.02,player.z);
- camera.rotation.order='YXZ'; camera.rotation.y=lookX; camera.rotation.x=lookY;
- flash.position.copy(camera.position);
- let dir=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
- flash.target.position.copy(camera.position).add(dir.multiplyScalar(5));
- flash.visible=flashOn;
- if(flashOn){ player.bat=Math.max(0,player.bat-dt*0.6); }
- if(running) player.st=Math.max(0,player.st-dt*8); else player.st=Math.min(100,player.st+dt*5);
- keys.forEach(k=>{ if(!k.taken){ k.group.rotation.y+=dt*2; k.group.position.y=1.1+Math.sin(time*2+k.x)*0.15;
-   let d=Math.hypot(player.x-k.x,player.z-k.z); if(d<1.2){ k.taken=true; k.group.visible=false; player.keys++; document.getElementById('keyCount').textContent=player.keys; showMsg("🔑 لقيت مفتاح دهبي! فاضل "+(3-player.keys)); if(player.keys===3){ document.getElementById('objTxt').textContent="اهرب للباب الرئيسي في آخر الممر!"; } } } });
- let md=Math.hypot(player.x-monster.position.x,player.z-monster.position.z);
- if(md>0.8){ let dx=(player.x-monster.position.x)/md, dz=(player.z-monster.position.z)/md; monster.position.x+=dx*monsterSpeed*dt; monster.position.z+=dz*monsterSpeed*dt; monster.lookAt(player.x,1.5,player.z); monster.position.y=Math.sin(time*6)*0.05; }
- if(md<1.5 && !scare){ scare=true; player.hp-=18; document.getElementById('blood').style.opacity=1; setTimeout(()=>document.getElementById('blood').style.opacity=0,600); showMsg("💀 الوحش مسكك! اهرب بسرعة!"); setTimeout(()=>scare=false,1500); if(player.hp<=0){ alert("💀 موتت! جرب تاني يا بطل"); location.reload(); } }
- document.getElementById('hpTxt').textContent=player.hp+"/100"; document.getElementById('hpFill').style.width=player.hp+"%";
- document.getElementById('stTxt').textContent=Math.floor(player.st)+"%"; document.getElementById('stFill').style.width=player.st+"%";
- document.getElementById('batTxt').textContent=Math.floor(player.bat)+"%"; document.getElementById('batFill').style.width=player.bat+"%";
- let m=Math.floor(time/60), s=Math.floor(time%60); document.getElementById('timer').textContent=(m<10?'0'+m:m)+":"+(s<10?'0'+s:s);
- document.getElementById('loc').textContent = player.x<-4?"BEDROOM":player.x>4?"KITCHEN":"WEST WING";
- if(Math.hypot(player.x-0,player.z+10)<1.8){ if(player.keys>=3){ showMsg("🎉 هربت! انت ملك اللعبة 👑"); setTimeout(()=>{alert("🏆 كسبت! HELL OF ALMOZAG"); location.reload();},800); } else { showMsg("🔒 الباب مقفول! محتاج "+(3-player.keys)+" مفاتيح"); } }
- let near=keys.some(k=>!k.taken && Math.hypot(player.x-k.x,player.z-k.z)<2);
- document.getElementById('interact').style.display=near?"block":"none";
+ if(!gameStarted||gameOver)return;
+
+ let dt=Math.min(clock.getDelta(),.05);
+ time+=dt;
+
+ updatePlayer(dt);
+ updateKeys(dt);
+ updateMonster(dt);
+ updateHUD();
+
  renderer.render(scene,camera);
 }
-document.addEventListener('keydown',e=>{
- if(e.key==='w'||e.key==='W'||e.key==='ArrowUp') move.z=-1;
- if(e.key==='s'||e.key==='S'||e.key==='ArrowDown') move.z=1;
- if(e.key==='a'||e.key==='A'||e.key==='ArrowLeft') move.x=-1;
- if(e.key==='d'||e.key==='D'||e.key==='ArrowRight') move.x=1;
- if(e.key==='Shift') running=true;
- if(e.key==='f'||e.key==='F') flashOn=!flashOn;
+
+/* ===== CONTROLS ===== */
+
+document.addEventListener("keydown",e=>{
+ if(!gameStarted)return;
+
+ if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))
+  e.preventDefault();
+
+ if(e.key.toLowerCase()==="w"||e.key==="ArrowUp")keyboard.z=-1;
+ if(e.key.toLowerCase()==="s"||e.key==="ArrowDown")keyboard.z=1;
+ if(e.key.toLowerCase()==="a"||e.key==="ArrowLeft")keyboard.x=-1;
+ if(e.key.toLowerCase()==="d"||e.key==="ArrowRight")keyboard.x=1;
+
+ if(e.key==="Shift")running=true;
+ if(e.key.toLowerCase()==="f")toggleFlash();
+ if(e.key.toLowerCase()==="e")interact();
+ if(e.key===" "&&jumpTime<=0)jumpTime=.45;
 });
-document.addEventListener('keyup',e=>{
- if(e.key==='w'||e.key==='W'||e.key==='ArrowUp') move.z=0;
- if(e.key==='s'||e.key==='S'||e.key==='ArrowDown') move.z=0;
- if(e.key==='a'||e.key==='A'||e.key==='ArrowLeft') move.x=0;
- if(e.key==='d'||e.key==='D'||e.key==='ArrowRight') move.x=0;
- if(e.key==='Shift') running=false;
+
+document.addEventListener("keyup",e=>{
+ if(e.key.toLowerCase()==="w"||e.key==="ArrowUp")keyboard.z=0;
+ if(e.key.toLowerCase()==="s"||e.key==="ArrowDown")keyboard.z=0;
+ if(e.key.toLowerCase()==="a"||e.key==="ArrowLeft")keyboard.x=0;
+ if(e.key.toLowerCase()==="d"||e.key==="ArrowRight")keyboard.x=0;
+ if(e.key==="Shift")running=false;
 });
-document.addEventListener('mousemove',e=>{ if(!gameStarted) return; lookX-=e.movementX*0.0025; lookY-=e.movementY*0.0025; lookY=Math.max(-1,Math.min(1,lookY)); });
-document.body.addEventListener('click',()=>{ if(gameStarted) document.body.requestPointerLock?.(); });
-document.addEventListener('touchstart',e=>{ if(e.target.closest('#joy')||e.target.closest('.btn')) return; lastTouch=e.touches[0]; },{passive:true});
-document.addEventListener('touchmove',e=>{ if(!lastTouch||e.target.closest('#joy')) return; let t=e.touches[0]; lookX-=(t.clientX-lastTouch.clientX)*0.005; lookY-=(t.clientY-lastTouch.clientY)*0.005; lookY=Math.max(-1,Math.min(1,lookY)); lastTouch=t; },{passive:true});
-document.addEventListener('touchend',()=>lastTouch=null);
-let joyEl=document.getElementById('joy'),knob=document.getElementById('knob');
-joyEl.addEventListener('touchstart',e=>{ joy.active=true; },{passive:true});
-joyEl.addEventListener('touchmove',e=>{ if(!joy.active) return; let r=joyEl.getBoundingClientRect(); let t=e.touches[0]; let dx=(t.clientX-(r.left+r.width/2))/40, dy=(t.clientY-(r.top+r.height/2))/40; dx=Math.max(-1,Math.min(1,dx)); dy=Math.max(-1,Math.min(1,dy)); joy.x=dx; joy.y=dy; knob.style.transform=`translate(calc(-50% + ${dx*25}px),calc(-50% + ${dy*25}px))`; },{passive:true});
-joyEl.addEventListener('touchend',()=>{ joy.x=0; joy.y=0; joy.active=false; knob.style.transform='translate(-50%,-50%)'; });
-document.getElementById('btnFlash').onclick=()=>flashOn=!flashOn;
-document.getElementById('btnRun').ontouchstart=()=>running=true; document.getElementById('btnRun').ontouchend=()=>running=false;
-document.getElementById('btnRun').onclick=()=>running=!running;
-document.getElementById('btnAct').onclick=()=>showMsg("✋ بتدور هنا... كمل تدوير");
-document.getElementById('btnJump').onclick=()=>{ player.y=2.2; setTimeout(()=>player.y=1.7,250); };
-document.getElementById('startBtn').onclick=async()=>{
-  await forceLandscape();
-  document.getElementById('menu').style.display='none'; gameStarted=true; init();
-  showMsg("👻 اهلا بيك في HELL OF ALMOZAG<br>دور على 3 مفاتيح دهبي",3000);
-  try{ let a=new (window.AudioContext||window.webkitAudioContext)(); let o=a.createOscillator(); o.frequency.value=55; o.connect(a.destination); o.start(); o.stop(a.currentTime+1); }catch(e){}
+
+function toggleFlash(){
+ if(player.bat<=0){
+  message("🔋 البطارية فارغة!");
+  return;
+ }
+ flashOn=!flashOn;
+ $("btnFlash").classList.toggle("active",flashOn);
+ sound(300,.08);
+}
+
+$("joy").addEventListener("pointerdown",e=>{
+ joystick.active=true;
+ $("joy").setPointerCapture(e.pointerId);
+});
+
+$("joy").addEventListener("pointermove",e=>{
+ if(!joystick.active)return;
+
+ let r=$("joy").getBoundingClientRect();
+ let dx=(e.clientX-r.left-r.width/2)/38;
+ let dy=(e.clientY-r.top-r.height/2)/38;
+
+ joystick.x=Math.max(-1,Math.min(1,dx));
+ joystick.y=Math.max(-1,Math.min(1,dy));
+
+ $("knob").style.transform=
+  `translate(calc(-50% + ${joystick.x*25}px),calc(-50% + ${joystick.y*25}px))`;
+});
+
+function resetJoy(){
+ joystick.x=0;
+ joystick.y=0;
+ joystick.active=false;
+ $("knob").style.transform="translate(-50%,-50%)";
+}
+$("joy").addEventListener("pointerup",resetJoy);
+$("joy").addEventListener("pointercancel",resetJoy);
+
+document.addEventListener("pointerdown",e=>{
+ if(!gameStarted)return;
+ if(e.target.closest("#joy")||e.target.closest("#buttons"))return;
+ if(e.pointerType==="mouse")return;
+ lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};
+});
+
+document.addEventListener("pointermove",e=>{
+ if(!lastTouch||lastTouch.id!==e.pointerId)return;
+ yaw-=(e.clientX-lastTouch.x)*.005;
+ pitch-=(e.clientY-lastTouch.y)*.005;
+ pitch=Math.max(-1.1,Math.min(1.1,pitch));
+ lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};
+});
+
+document.addEventListener("pointerup",()=>lastTouch=null);
+document.addEventListener("pointercancel",()=>lastTouch=null);
+
+$("btnFlash").onclick=toggleFlash;
+
+$("btnRun").addEventListener("pointerdown",()=>{
+ running=true;
+ $("btnRun").classList.add("active");
+});
+$("btnRun").addEventListener("pointerup",()=>{
+ running=false;
+ $("btnRun").classList.remove("active");
+});
+$("btnRun").addEventListener("pointercancel",()=>{
+ running=false;
+ $("btnRun").classList.remove("active");
+});
+
+$("btnJump").onclick=()=>{
+ if(jumpTime<=0)jumpTime=.45;
 };
-window.addEventListener('resize',()=>{ if(!renderer) return; camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+
+$("btnAct").onclick=interact;
+
+/* Mouse look for PC */
+document.addEventListener("mousemove",e=>{
+ if(!gameStarted||!document.pointerLockElement)return;
+ yaw-=e.movementX*.0025;
+ pitch-=e.movementY*.0025;
+ pitch=Math.max(-1.1,Math.min(1.1,pitch));
+});
+
+$("game").addEventListener("click",()=>{
+ if(gameStarted&&matchMedia("(pointer:fine)").matches){
+  $("game").requestPointerLock?.();
+ }
+});
+
+/* ===== MENU ===== */
+
+function resetGame(){
+ player={
+  x:0,z:8,y:1.7,
+  hp:100,st:100,bat:100,
+  count:0,speed:3
+ };
+
+ keys=[];
+ walls=[];
+ time=0;
+ lastHit=0;
+ yaw=0;
+ pitch=0;
+ jumpTime=0;
+ flashOn=true;
+ running=false;
+ gameOver=false;
+
+ $("keyText").textContent="0";
+ $("objective").textContent="🎯 اجمع المفاتيح الثلاثة";
+ $("blood").style.opacity=0;
+ $("endScreen").style.display="none";
+}
+
+async function startGame(){
+ await landscape();
+
+ if(!window.THREE){
+  message("تعذر تحميل محرك اللعبة. تأكد من الإنترنت.");
+  return;
+ }
+
+ $("menu").style.display="none";
+ resetGame();
+ createWorld();
+
+ clock=new THREE.Clock();
+ gameStarted=true;
+
+ sound(55,.7,"sine");
+ message("👻 مرحباً بك... اجمع المفاتيح واهرب!",3500);
+
+ animate();
+}
+
+$("start").onclick=startGame;
+
+$("instructions").onclick=()=>{
+ message("🎮 التحكم:<br>الجويستيك للحركة<br>اسحب الشاشة للنظر<br>🏃 للجري<br>⬆️ للقفز<br>🔦 للكشاف<br>✋ للتفاعل<br>اجمع 3 مفاتيح وافتح باب الخروج",6000);
+};
+
+$("restart").onclick=startGame;
+
+$("home").onclick=()=>{
+ $("endScreen").style.display="none";
+ $("menu").style.display="flex";
+};
+
+window.addEventListener("resize",()=>{
+ if(!renderer||!camera)return;
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+ });
+}
 </script>
 </body>
 </html>
