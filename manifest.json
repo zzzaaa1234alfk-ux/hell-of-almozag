@@ -1,12 +1,24 @@
-
 {
   "name": "HELL OF ALMOZAG X",
-  "short_name": "ALMOZAG X",
-  "description": "3D Horror Survival Game",
-  "start_url": "./index.html",
-  "scope": "./",
+  "short_name": "ALMOZAG",
+  "description": "اهرب من القصر وجمع 3 مفاتيح",
+  "start_url": "./index.html?v=99999",
   "display": "standalone",
   "orientation": "landscape",
-  "background_color": "#000000",
-  "theme_color": "#050000"
+  "background_color": "#030000",
+  "theme_color": "#050000",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3261/3261352.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3261/3261352.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
