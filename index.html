@@ -24,7 +24,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 .action{position:absolute;right:16px;width:70px;height:70px;border-radius:50%;border:2px solid #ff4444;background:rgba(40,0,0,.9);color:#fff;font-size:13px;font-weight:bold;pointer-events:auto}
 #lightBtn{bottom:102px}#runBtn{bottom:18px}#useBtn{bottom:18px;right:96px;background:#d40000}
 #soundBtn{position:absolute;top:58px;left:12px;pointer-events:auto;background:#111d;color:#fff;border:1px solid #666;border-radius:10px;padding:8px 11px}
-#lookArea{position:absolute;right:0;top:20%;width:55%;height:70%;pointer-events:auto}
 #start,#end{position:fixed;inset:0;z-index:40;background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.92)),url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=1200&auto=format&fit=crop');background-size:cover;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
 .panel{width:min(440px,100%);background:rgba(5,5,5,.93);border:1px solid #a00;border-radius:18px;padding:26px 20px}
 .panel h1{color:#f22;font-size:30px;text-shadow:0 0 20px red;margin-bottom:10px}
@@ -46,7 +45,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 </div>
 <div id="controls">
  <div id="stickBase"><div id="stick"></div></div>
- <div id="lookArea"></div>
  <button id="lightBtn" class="action">🔦<br>الكشاف</button>
  <button id="runBtn" class="action">🏃<br>جري</button>
  <button id="useBtn" class="action">✋<br>خد / افتح</button>
@@ -73,25 +71,22 @@ const doorMat=new THREE.MeshStandardMaterial({color:0x4a1414,roughness:.7});
 const woodMat=new THREE.MeshStandardMaterial({color:0x5a3a22,roughness:.9});
 const bedMat=new THREE.MeshStandardMaterial({color:0x2a2a3a,roughness:1});
 const redMat=new THREE.MeshStandardMaterial({color:0xaa0808,roughness:.8});
-const walls=[];
-function box(x,y,z,w,h,d,mat,wall=false){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.receiveShadow=true;m.castShadow=true;scene.add(m);
- if(wall) walls.push({x,z,w,d});
- return m;
+function box(x,y,z,w,h,d,mat){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.receiveShadow=true;m.castShadow=true;scene.add(m);return m;
 }
 box(0,-.15,0,16,.3,28,floorMat);
 box(0,3.2,0,16,.3,28,ceilMat);
-box(-8,1.5,0,.4,3,28,wallMat,true);box(8,1.5,0,.4,3,28,wallMat,true);
-box(0,1.5,14,.4,3,16,wallMat,true);box(0,1.5,-14,.4,3,16,wallMat,true);
-box(-4,1.5,6,.4,3,8,wallMat,true);
-box(-4,1.5,-2,.4,3,4,wallMat,true);
-box(-8,1.5,2,.4,3,2,wallMat,true);
-box(4,1.5,-2,.4,3,8,wallMat,true);
-box(4,1.5,6,.4,3,4,wallMat,true);
-box(8,1.5,2,.4,3,2,wallMat,true);
-box(0,1.5,-10,16,.4,3,wallMat,true);
-box(-4,1.5,-10,.4,3,3,wallMat,true);box(4,1.5,-10,.4,3,3,wallMat,true);
-function lamp(x,z,color=0xffaa55){const l=new THREE.PointLight(color,1.6,10);l.position.set(x,2.7,z);scene.add(l);box(x,3.05,z,.6,.08,.4,new THREE.MeshStandardMaterial({color:0x888888}),false);}
+box(-8,1.5,0,.4,3,28,wallMat);box(8,1.5,0,.4,3,28,wallMat);
+box(0,1.5,14,.4,3,16,wallMat);box(0,1.5,-14,.4,3,16,wallMat);
+box(-4,1.5,6,.4,3,8,wallMat);
+box(-4,1.5,-2,.4,3,4,wallMat);
+box(-8,1.5,2,.4,3,2,wallMat);
+box(4,1.5,-2,.4,3,8,wallMat);
+box(4,1.5,6,.4,3,4,wallMat);
+box(8,1.5,2,.4,3,2,wallMat);
+box(0,1.5,-10,16,.4,3,wallMat);
+box(-4,1.5,-10,.4,3,3,wallMat);box(4,1.5,-10,.4,3,3,wallMat);
+function lamp(x,z,color=0xffaa55){const l=new THREE.PointLight(color,1.6,10);l.position.set(x,2.7,z);scene.add(l);box(x,3.05,z,.6,.08,.4,new THREE.MeshStandardMaterial({color:0x888888}));}
 lamp(0,6);lamp(-6,2,0xff6666);lamp(6,-2,0x66ffaa);lamp(0,-12,0xffcc00);
 box(-6.2,.45,2,1.6,.9,2.4,bedMat);box(-6.2,.95,2,1.6,.25,2.4,new THREE.MeshStandardMaterial({color:0xeeeeee}));
 box(-7.2,.9,4.5,.8,1.8,1,woodMat);
@@ -105,7 +100,7 @@ const monster=new THREE.Group();const mBody=new THREE.Mesh(new THREE.CapsuleGeom
 for(const x of [-.13,.13]){const e=new THREE.Mesh(new THREE.SphereGeometry(.05,8,8),new THREE.MeshBasicMaterial({color:0xff0000}));e.position.set(x,2.05,-.3);monster.add(e);}
 monster.position.set(0,0,-12);scene.add(monster);
 
-let started=false,hasKey=false,ended=false,flashOn=true,run=false,yaw=0,pitch=0,moveX=0,moveY=0,joyId=null;
+let started=false,hasKey=false,ended=false,flashOn=true,run=false,yaw=0,pitch=0,moveX=0,moveY=0;
 const keys={};const msgEl=document.getElementById('msg');
 function msg(t){msgEl.textContent=t;msgEl.style.opacity=1;setTimeout(()=>msgEl.style.opacity=0,2200);}
 function roomName(){const p=camera.position;if(p.z<-10)return 'أوضة 3 - أوضة المفتاح';if(p.x<-4)return 'أوضة 1 - أوضة النوم';if(p.x>4)return 'أوضة 2 - أوضة الترابيزات';return 'الممر';}
@@ -118,40 +113,60 @@ function interact(){
 }
 document.getElementById('useBtn').addEventListener('click',interact);
 document.getElementById('lightBtn').addEventListener('click',()=>{flashOn=!flashOn;flash.visible=flashOn;});
-const runBtn=document.getElementById('runBtn');runBtn.addEventListener('touchstart',e=>{e.preventDefault();run=true});runBtn.addEventListener('touchend',()=>run=false);runBtn.addEventListener('mousedown',()=>run=true);runBtn.addEventListener('mouseup',()=>run=false);
+const runBtn=document.getElementById('runBtn');runBtn.addEventListener('touchstart',e=>{e.preventDefault();run=true},{passive:false});runBtn.addEventListener('touchend',()=>run=false);runBtn.addEventListener('mousedown',()=>run=true);runBtn.addEventListener('mouseup',()=>run=false);
 addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')interact();if(e.code==='KeyF')flash.visible=!flash.visible;});addEventListener('keyup',e=>keys[e.code]=false);
 renderer.domElement.addEventListener('click',()=>{if(started&&innerWidth>800)renderer.domElement.requestPointerLock?.();});
 addEventListener('mousemove',e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.2,Math.min(1.2,pitch));}});
 
-// عصا جديدة - بتتحرك مع صباعك ومش بتعلق
+// تحكم موبايل - touch - شمال حركة ويمين نظر - بيشتغلوا مع بعض
 const base=document.getElementById('stickBase'),stick=document.getElementById('stick');
-let joyStartX=0, joyStartY=0, joyActive=false;
-document.getElementById('stage').addEventListener('pointerdown',e=>{
-  if(e.clientX < innerWidth*0.4 && e.clientY > 100 && !joyActive){
-    joyActive=true; joyId=e.pointerId;
-    joyStartX=e.clientX; joyStartY=e.clientY;
-    base.style.left=(e.clientX-59)+'px';
-    base.style.top=(e.clientY-59)+'px';
-    base.style.bottom='auto';
+let joyTouch=null, joyStartX=0, joyStartY=0;
+let lookTouch=null, lastLookX=0, lastLookY=0;
+const stageEl=document.getElementById('stage');
+function onTouchStart(e){
+  for(let t of e.changedTouches){
+    if(t.clientX < innerWidth*0.45 && joyTouch===null){
+      joyTouch=t.identifier; joyStartX=t.clientX; joyStartY=t.clientY;
+      base.style.left=(t.clientX-59)+'px';
+      base.style.top=(t.clientY-59)+'px';
+      base.style.bottom='auto';
+    } else if(t.clientX >= innerWidth*0.45 && lookTouch===null){
+      lookTouch=t.identifier; lastLookX=t.clientX; lastLookY=t.clientY;
+    }
   }
-});
-addEventListener('pointermove',e=>{
-  if(!joyActive || e.pointerId!==joyId) return;
-  let dx=e.clientX-joyStartX, dy=e.clientY-joyStartY;
-  const l=Math.hypot(dx,dy), mx=40;
-  if(l>mx){dx=dx/l*mx; dy=dy/l*mx;}
-  moveX=dx/mx; moveY=dy/mx;
-  stick.style.transform=`translate(${dx}px,${dy}px)`;
-});
-function stopJoy(){
-  joyActive=false; joyId=null; moveX=0; moveY=0;
-  stick.style.transform='';
-  base.style.left='18px'; base.style.bottom='18px'; base.style.top='auto';
 }
-addEventListener('pointerup',stopJoy);
-addEventListener('pointercancel',stopJoy);
+function onTouchMove(e){
+  e.preventDefault();
+  for(let t of e.changedTouches){
+    if(t.identifier===joyTouch){
+      let dx=t.clientX-joyStartX, dy=t.clientY-joyStartY;
+      const l=Math.hypot(dx,dy), mx=40;
+      if(l>mx){dx=dx/l*mx; dy=dy/l*mx;}
+      moveX=dx/mx; moveY=dy/mx;
+      stick.style.transform=`translate(${dx}px,${dy}px)`;
+    }
+    if(t.identifier===lookTouch){
+      yaw-=(t.clientX-lastLookX)*0.005;
+      pitch-=(t.clientY-lastLookY)*0.004;
+      pitch=Math.max(-1.2,Math.min(1.2,pitch));
+      lastLookX=t.clientX; lastLookY=t.clientY;
+    }
+  }
+}
+function onTouchEnd(e){
+  for(let t of e.changedTouches){
+    if(t.identifier===joyTouch){
+      joyTouch=null; moveX=0; moveY=0; stick.style.transform='';
+      base.style.left='18px'; base.style.bottom='18px'; base.style.top='auto';
+    }
+    if(t.identifier===lookTouch) lookTouch=null;
+  }
+}
+stageEl.addEventListener('touchstart',onTouchStart,{passive:true});
+stageEl.addEventListener('touchmove',onTouchMove,{passive:false});
+stageEl.addEventListener('touchend',onTouchEnd);
+stageEl.addEventListener('touchcancel',onTouchEnd);
 
-const look=document.getElementById('lookArea');let last=null;look.addEventListener('pointerdown',e=>{last={x:e.clientX,y:e.clientY,id:e.pointerId};look.setPointerCapture(e.pointerId);});look.addEventListener('pointermove',e=>{if(!last||last.id!==e.pointerId)return;yaw-=(e.clientX-last.x)*.005;pitch-=(e.clientY-last.y)*.004;pitch=Math.max(-1.2,Math.min(1.2,pitch));last={x:e.clientX,y:e.clientY,id:e.pointerId};});look.addEventListener('pointerup',()=>last=null);
 async function startNow(){started=true;document.getElementById('start').style.display='none';document.getElementById('controls').style.display='block';document.getElementById('rotateNotice').style.display='none';try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();}catch(e){}try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape');}catch(e){}if(innerWidth>900)renderer.domElement.requestPointerLock?.();msg('ادخل أوضة 1 على الشمال، وبعدين أوضة 2، والمفتاح في أوضة 3');}
 document.getElementById('startBtn').addEventListener('click',()=>{if(window.innerHeight>window.innerWidth){document.getElementById('rotateNotice').style.display='flex';let c=setInterval(()=>{if(window.innerWidth>window.innerHeight){clearInterval(c);startNow();}},400);return;}startNow();});
 function isBlocked(x,z){
@@ -167,8 +182,11 @@ function isBlocked(x,z){
 const clock=new THREE.Clock();
 function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);
  if(started&&!ended){
-  const f=(keys.KeyW?-1:0)+(keys.KeyS?1:0)-moveY;const s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+moveX;const sp=(run||keys.ShiftLeft?4.2:2.4)*dt;
-  const dx=(Math.sin(yaw)*(-f)+Math.cos(yaw)*s)*sp;const dz=(Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;
+  const f=(keys.KeyW?1:0)+(keys.KeyS?-1:0)-moveY;
+  const s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+moveX;
+  const sp=(run||keys.ShiftLeft?4.2:2.4)*dt;
+  const dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*sp;
+  const dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;
   const nx=camera.position.x+dx,nz=camera.position.z+dz;
   if(!isBlocked(nx,camera.position.z))camera.position.x=nx;
   if(!isBlocked(camera.position.x,nz))camera.position.z=nz;
