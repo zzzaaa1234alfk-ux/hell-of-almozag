@@ -2,203 +2,252 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#050505">
-<link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HELL OF ALMOZAG</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Arial,sans-serif;touch-action:none}
-#stage{position:fixed;inset:0;width:100vw;height:100dvh;overflow:hidden}
-#game{position:absolute;inset:0}canvas{display:block}
-#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse,transparent 30%,rgba(0,0,0,.75) 100%);z-index:2}
-#hud{position:absolute;inset:0;z-index:5;pointer-events:none}
-#brand{position:absolute;top:10px;left:12px;color:#ff1a1a;font-weight:900;font-size:22px;text-shadow:0 0 14px red}
-#objective{position:absolute;top:10px;right:12px;background:rgba(5,5,5,.88);border:1px solid #ff2a2a;border-radius:12px;padding:9px 13px;font-size:14px;line-height:1.5;text-align:right}
-#crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:26px;text-shadow:0 0 10px #fff}
-#status{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);border:1px solid #555;border-radius:12px;padding:9px 18px;font-size:15px;white-space:nowrap}
-#msg{position:absolute;top:24%;left:50%;transform:translateX(-50%);width:90%;text-align:center;font-size:18px;text-shadow:0 2px 10px #000;opacity:0;transition:.2s}
-#controls{position:absolute;inset:0;z-index:10;pointer-events:none;display:none}
-#stickBase{position:absolute;bottom:18px;left:18px;width:118px;height:118px;border:2px solid rgba(255,40,40,.9);background:rgba(0,0,0,.35);border-radius:50%;pointer-events:none}
-#stick{position:absolute;width:50px;height:50px;left:32px;top:32px;border-radius:50%;background:radial-gradient(circle,#ff5555,#8b0000);border:2px solid #ff8888}
-.action{position:absolute;right:16px;width:70px;height:70px;border-radius:50%;border:2px solid #ff4444;background:rgba(40,0,0,.9);color:#fff;font-size:13px;font-weight:bold;pointer-events:auto}
-#lightBtn{bottom:102px}#runBtn{bottom:18px}#useBtn{bottom:18px;right:96px;background:#d40000}
-#soundBtn{position:absolute;top:58px;left:12px;pointer-events:auto;background:#111d;color:#fff;border:1px solid #666;border-radius:10px;padding:8px 11px}
-#start,#end{position:fixed;inset:0;z-index:40;background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.92)),url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=1200&auto=format&fit=crop');background-size:cover;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
-.panel{width:min(440px,100%);background:rgba(5,5,5,.93);border:1px solid #a00;border-radius:18px;padding:26px 20px}
-.panel h1{color:#f22;font-size:30px;text-shadow:0 0 20px red;margin-bottom:10px}
-.panel p{color:#ccc;line-height:1.7;font-size:14px}
-.mainbtn{border:0;border-radius:12px;background:#e00000;color:#fff;padding:15px;font-size:18px;font-weight:bold;width:100%;margin-top:14px}
-#rotateNotice{display:none;position:fixed;inset:0;z-index:60;background:#030303f5;align-items:center;justify-content:center;padding:24px;text-align:center}
-.rotateCard{max-width:340px;border:1px solid #a00;background:#100707;border-radius:18px;padding:26px}
-#end{display:none}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000;overflow:hidden;font-family:Arial,sans-serif;color:#fff;user-select:none}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.85) 100%);z-index:5}
+#blood{position:fixed;inset:0;pointer-events:none;opacity:0;transition:.3s;background:radial-gradient(ellipse at center,transparent 40%,rgba(180,0,0,.6) 100%);z-index:6}
+/* HUD */
+#hud{position:fixed;top:0;left:0;right:0;z-index:10;padding:10px;display:flex;justify-content:space-between;pointer-events:none;text-shadow:0 2px 6px #000}
+.hud-box{background:rgba(0,0,0,.6);border:1px solid #333;border-radius:10px;padding:8px 12px;backdrop-filter:blur(4px)}
+#hpBar{width:150px;height:12px;background:#222;border-radius:20px;overflow:hidden;margin-top:4px}
+#hpFill{width:78%;height:100%;background:linear-gradient(90deg,#ff0000,#ff4444);transition:.3s}
+#stBar{width:150px;height:8px;background:#222;border-radius:20px;overflow:hidden;margin-top:4px}
+#stFill{width:62%;height:100%;background:#ffcc00;transition:.3s}
+#batBar{width:120px;height:8px;background:#222;border-radius:20px;overflow:hidden;margin-top:4px}
+#batFill{width:64%;height:100%;background:#00e5ff;transition:.3s}
+#cross{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;font-size:22px;color:rgba(255,255,255,.8);pointer-events:none;text-shadow:0 0 8px #000}
+#obj{position:fixed;bottom:110px;left:10px;z-index:10;background:rgba(0,0,0,.7);padding:8px 12px;border-radius:10px;border-right:3px solid #ff0000;font-size:13px}
+#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(0,0,0,.85);padding:14px 20px;border-radius:12px;border:1px solid #ff0000;display:none;text-align:center;font-size:16px;max-width:85%}
+#interact{position:fixed;bottom:180px;left:50%;transform:translateX(-50%);z-index:10;background:#ff0000;color:#fff;padding:10px 18px;border-radius:25px;display:none;font-weight:bold;box-shadow:0 0 20px rgba(255,0,0,.6)}
+/* Joystick */
+#joy{position:fixed;bottom:20px;left:18px;width:110px;height:110px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.3);border-radius:50%;z-index:15;touch-action:none}
+#knob{position:absolute;top:50%;left:50%;width:48px;height:48px;background:rgba(255,255,255,.7);border-radius:50%;transform:translate(-50%,-50%)}
+#btns{position:fixed;bottom:20px;right:15px;z-index:15;display:flex;gap:10px}
+.btn{width:62px;height:62px;border-radius:50%;border:2px solid rgba(255,255,255,.4);background:rgba(0,0,0,.5);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center}
+.btn:active{background:#ff0000}
+#btnRun{border-color:#ffcc00}
+#btnFlash{border-color:#00e5ff}
+/* Menu */
+#menu{position:fixed;inset:0;z-index:30;background:linear-gradient(rgba(0,0,0,.4),#000),url('https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=800') center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+#menu h1{font-size:42px;letter-spacing:2px;color:#ff0000;text-shadow:0 0 20px #ff0000,0 4px 0 #000;line-height:1.1}
+#menu p{margin:12px 0 20px;color:#ccc;font-size:15px}
+#startBtn{background:#ff0000;color:#fff;border:none;padding:16px 40px;font-size:20px;font-weight:bold;border-radius:30px;box-shadow:0 0 25px rgba(255,0,0,.7);cursor:pointer}
+#menu small{display:block;margin-top:18px;color:#888;font-size:12px;line-height:1.6}
+#keys{position:fixed;top:70px;right:10px;z-index:10;background:rgba(0,0,0,.6);padding:6px 10px;border-radius:20px;font-size:13px}
 </style>
 </head>
 <body>
-<div id="stage">
-<div id="game"></div><div id="vignette"></div>
+<canvas id="game"></canvas>
+<div id="vignette"></div><div id="blood"></div>
+
 <div id="hud">
- <div id="brand">HELL OF ALMOZAG</div>
- <div id="objective"><b>المهمة:</b><br>ادخل الأوض ودور على المفتاح<br>وافتح باب الخروج</div>
- <div id="crosshair">+</div><div id="msg"></div>
- <div id="status">🔑 المفتاح: 0/1 | الأوضة: الممر</div>
+  <div class="hud-box">
+    <div>❤️ HP <span id="hpTxt">78/100</span></div>
+    <div id="hpBar"><div id="hpFill"></div></div>
+    <div style="margin-top:6px">🏃 STAMINA <span id="stTxt">62%</span></div>
+    <div id="stBar"><div id="stFill"></div></div>
+  </div>
+  <div class="hud-box" style="text-align:left" dir="ltr">
+    <div>🔦 BATTERY <span id="batTxt">64%</span></div>
+    <div id="batBar"><div id="batFill"></div></div>
+    <div style="margin-top:6px">⏱️ <span id="timer">00:00</span></div>
+    <div>📍 <span id="loc">WEST WING</span></div>
+  </div>
 </div>
-<div id="controls">
- <div id="stickBase"><div id="stick"></div></div>
- <button id="lightBtn" class="action">🔦<br>الكشاف</button>
- <button id="runBtn" class="action">🏃<br>جري</button>
- <button id="useBtn" class="action">✋<br>خد / افتح</button>
- <button id="soundBtn">الصوت: مغلق</button>
+
+<div id="cross">+</div>
+<div id="keys">🔑 <span id="keyCount">0</span>/3</div>
+<div id="obj">🎯 المهمة: <span id="objTxt">دور على 3 مفاتيح واهرب</span></div>
+<div id="interact">اضغط E / دوس هنا</div>
+<div id="msg"></div>
+
+<div id="joy"><div id="knob"></div></div>
+<div id="btns">
+  <div class="btn" id="btnFlash">🔦</div>
+  <div class="btn" id="btnRun">🏃</div>
+  <div class="btn" id="btnJump">⬆️</div>
+  <div class="btn" id="btnAct">✋</div>
 </div>
+
+<div id="menu">
+  <div style="font-size:50px">💀</div>
+  <h1>HELL OF<br>ALMOZAG</h1>
+  <p>تقدر تهرب من القصر ولا هتموت جوه؟ 👻<br>جمع 3 مفاتيح دهبي وافتح الباب الرئيسي</p>
+  <button id="startBtn">▶️ ابدأ اللعب</button>
+  <small>🖥️ كمبيوتر: WASD للحركة + ماوس للنظر + SHIFT للجري + F للكشاف + E للتفاعل<br>📱 موبايل: الجويستيك للحركة + اسحب للنظر + الزرار للكشاف والجري</small>
 </div>
-<div id="rotateNotice"><div class="rotateCard"><div style="font-size:54px">📱 ↻</div><h2>لف الموبايل بالعرض</h2><p>اللعبة بالعرض بس، لف موبايلك.</p></div></div>
-<div id="start"><div class="panel"><h1>💀 HELL OF ALMOZAG</h1><p>مبنى بجد: ممر + 3 أوض. ادخل الأوض، دور على المفتاح الذهبي، وارجع لباب الخروج. الوحش هيصحى أول ما تاخد المفتاح.</p><p><b>أوضة 1:</b> على الشمال - فيها سرير<br><b>أوضة 2:</b> على اليمين - فيها ترابيزات<br><b>أوضة 3:</b> في الآخر - فيها المفتاح</p><button class="mainbtn" id="startBtn">ابدأ الكابوس</button></div></div>
-<div id="end"><div class="panel"><h1 id="endTitle">انتهت</h1><p id="endText"></p><button class="mainbtn" onclick="location.reload()">العب من جديد</button></div></div>
 
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x030303);scene.fog=new THREE.FogExp2(0x050505,.035);
-const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,90);camera.position.set(0,1.65,9);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;document.getElementById('game').appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0x8a2a2a,0x100606,1.1));
-const flash=new THREE.SpotLight(0xfff2cc,40,24,Math.PI/6,.5,1.2);camera.add(flash);flash.position.set(0,0,0);flash.target.position.set(0,0,-1);camera.add(flash.target);scene.add(camera);
-const loader=new THREE.TextureLoader();
-function tex(url,color){const t=loader.load(url);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,1);return new THREE.MeshStandardMaterial({map:t,color:color,roughness:.95});}
-const wallMat=tex('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop',0x8a8a8a);
-const floorMat=tex('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=800&auto=format&fit=crop',0x666666);
-const ceilMat=new THREE.MeshStandardMaterial({color:0x111111,roughness:1});
-const doorMat=new THREE.MeshStandardMaterial({color:0x4a1414,roughness:.7});
-const woodMat=new THREE.MeshStandardMaterial({color:0x5a3a22,roughness:.9});
-const bedMat=new THREE.MeshStandardMaterial({color:0x2a2a3a,roughness:1});
-const redMat=new THREE.MeshStandardMaterial({color:0xaa0808,roughness:.8});
-function box(x,y,z,w,h,d,mat){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.receiveShadow=true;m.castShadow=true;scene.add(m);return m;
-}
-box(0,-.15,0,16,.3,28,floorMat);
-box(0,3.2,0,16,.3,28,ceilMat);
-box(-8,1.5,0,.4,3,28,wallMat);box(8,1.5,0,.4,3,28,wallMat);
-box(0,1.5,14,.4,3,16,wallMat);box(0,1.5,-14,.4,3,16,wallMat);
-box(-4,1.5,6,.4,3,8,wallMat);
-box(-4,1.5,-2,.4,3,4,wallMat);
-box(-8,1.5,2,.4,3,2,wallMat);
-box(4,1.5,-2,.4,3,8,wallMat);
-box(4,1.5,6,.4,3,4,wallMat);
-box(8,1.5,2,.4,3,2,wallMat);
-box(0,1.5,-10,16,.4,3,wallMat);
-box(-4,1.5,-10,.4,3,3,wallMat);box(4,1.5,-10,.4,3,3,wallMat);
-function lamp(x,z,color=0xffaa55){const l=new THREE.PointLight(color,1.6,10);l.position.set(x,2.7,z);scene.add(l);box(x,3.05,z,.6,.08,.4,new THREE.MeshStandardMaterial({color:0x888888}));}
-lamp(0,6);lamp(-6,2,0xff6666);lamp(6,-2,0x66ffaa);lamp(0,-12,0xffcc00);
-box(-6.2,.45,2,1.6,.9,2.4,bedMat);box(-6.2,.95,2,1.6,.25,2.4,new THREE.MeshStandardMaterial({color:0xeeeeee}));
-box(-7.2,.9,4.5,.8,1.8,1,woodMat);
-box(6,.45,0,1.4,.9,1.4,woodMat);box(6,.45,-4,1.2,.9,1.2,woodMat);box(5,.4,2,1,.8,1,redMat);
-box(-3,.55,-12,1.2,1.1,1.2,woodMat);box(3,.5,-12,1.1,1,1.1,woodMat);box(0,.4,-12.5,1,.8,1,redMat);
-const exitDoor=box(0,1.4,13.8,2.2,2.8,.3,doorMat);
-const exitLight=new THREE.PointLight(0xff0000,2,6);exitLight.position.set(0,2,13);scene.add(exitLight);
-const key=new THREE.Group();const ring=new THREE.Mesh(new THREE.TorusGeometry(.22,.06,8,20),new THREE.MeshStandardMaterial({color:0xffcc00,metalness:.8}));key.add(ring);const shaft=new THREE.Mesh(new THREE.BoxGeometry(.08,.5,.08),new THREE.MeshStandardMaterial({color:0xffcc00}));shaft.position.y=-.3;key.add(shaft);key.position.set(0,1.1,-12.5);scene.add(key);
-const keyLight=new THREE.PointLight(0xffcc00,1.8,4);keyLight.position.copy(key.position);scene.add(keyLight);
-const monster=new THREE.Group();const mBody=new THREE.Mesh(new THREE.CapsuleGeometry(.45,1,5,8),new THREE.MeshStandardMaterial({color:0x050505}));mBody.position.y=1.1;monster.add(mBody);const mHead=new THREE.Mesh(new THREE.SphereGeometry(.35,12,10),new THREE.MeshStandardMaterial({color:0x050505}));mHead.position.y=2;monster.add(mHead);
-for(const x of [-.13,.13]){const e=new THREE.Mesh(new THREE.SphereGeometry(.05,8,8),new THREE.MeshBasicMaterial({color:0xff0000}));e.position.set(x,2.05,-.3);monster.add(e);}
-monster.position.set(0,0,-12);scene.add(monster);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+let scene,camera,renderer,player={x:0,z:8,y:1.7,hp:78,st:62,bat:64,keys:0,speed:2.2},keys=[],doors=[],monster,flash,flashOn=true,running=false,move={x:0,z:0},lookX=0,lookY=0,lastTouch=null,joy={x:0,y:0,active:false},time=0,gameStarted=false,monsterSpeed=1.1,scare=false;
+let clock=new THREE.Clock();
 
-let started=false,hasKey=false,ended=false,flashOn=true,run=false,yaw=0,pitch=0,moveX=0,moveY=0;
-const keys={};const msgEl=document.getElementById('msg');
-function msg(t){msgEl.textContent=t;msgEl.style.opacity=1;setTimeout(()=>msgEl.style.opacity=0,2200);}
-function roomName(){const p=camera.position;if(p.z<-10)return 'أوضة 3 - أوضة المفتاح';if(p.x<-4)return 'أوضة 1 - أوضة النوم';if(p.x>4)return 'أوضة 2 - أوضة الترابيزات';return 'الممر';}
-function endGame(win){if(ended)return;ended=true;document.getElementById('end').style.display='flex';document.getElementById('endTitle').textContent=win?'نجوت 👑':'مسكك الظل 💀';document.getElementById('endText').textContent=win?'فتحت الباب وهربت من المبنى.':'الوحش مسكك. حاول تاني.';}
-function interact(){
- if(!started||ended)return;const p=camera.position;
- if(!hasKey&&p.distanceTo(key.position)<2.2){hasKey=true;scene.remove(key);scene.remove(keyLight);document.getElementById('status').textContent='🔑 المفتاح: 1/1 | اجري لباب الخروج';msg('خدت المفتاح! الوحش صحي! اجري للباب!');return;}
- if(p.distanceTo(exitDoor.position)<2.8){if(hasKey)endGame(true);else msg('الباب مقفول… دور على المفتاح في أوضة 3');}
- else msg('قرب أكتر من المفتاح أو الباب');
-}
-document.getElementById('useBtn').addEventListener('click',interact);
-document.getElementById('lightBtn').addEventListener('click',()=>{flashOn=!flashOn;flash.visible=flashOn;});
-const runBtn=document.getElementById('runBtn');runBtn.addEventListener('touchstart',e=>{e.preventDefault();run=true},{passive:false});runBtn.addEventListener('touchend',()=>run=false);runBtn.addEventListener('mousedown',()=>run=true);runBtn.addEventListener('mouseup',()=>run=false);
-addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')interact();if(e.code==='KeyF')flash.visible=!flash.visible;});addEventListener('keyup',e=>keys[e.code]=false);
-renderer.domElement.addEventListener('click',()=>{if(started&&innerWidth>800)renderer.domElement.requestPointerLock?.();});
-addEventListener('mousemove',e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.2,Math.min(1.2,pitch));}});
+function showMsg(t,ms=2200){let m=document.getElementById('msg');m.innerHTML=t;m.style.display='block';setTimeout(()=>m.style.display='none',ms);}
 
-// تحكم موبايل - touch - شمال حركة ويمين نظر - بيشتغلوا مع بعض
-const base=document.getElementById('stickBase'),stick=document.getElementById('stick');
-let joyTouch=null, joyStartX=0, joyStartY=0;
-let lookTouch=null, lastLookX=0, lastLookY=0;
-const stageEl=document.getElementById('stage');
-function onTouchStart(e){
-  for(let t of e.changedTouches){
-    if(t.clientX < innerWidth*0.45 && joyTouch===null){
-      joyTouch=t.identifier; joyStartX=t.clientX; joyStartY=t.clientY;
-      base.style.left=(t.clientX-59)+'px';
-      base.style.top=(t.clientY-59)+'px';
-      base.style.bottom='auto';
-    } else if(t.clientX >= innerWidth*0.45 && lookTouch===null){
-      lookTouch=t.identifier; lastLookX=t.clientX; lastLookY=t.clientY;
-    }
-  }
-}
-function onTouchMove(e){
-  e.preventDefault();
-  for(let t of e.changedTouches){
-    if(t.identifier===joyTouch){
-      let dx=t.clientX-joyStartX, dy=t.clientY-joyStartY;
-      const l=Math.hypot(dx,dy), mx=40;
-      if(l>mx){dx=dx/l*mx; dy=dy/l*mx;}
-      moveX=dx/mx; moveY=dy/mx;
-      stick.style.transform=`translate(${dx}px,${dy}px)`;
-    }
-    if(t.identifier===lookTouch){
-      yaw-=(t.clientX-lastLookX)*0.005;
-      pitch-=(t.clientY-lastLookY)*0.004;
-      pitch=Math.max(-1.2,Math.min(1.2,pitch));
-      lastLookX=t.clientX; lastLookY=t.clientY;
-    }
-  }
-}
-function onTouchEnd(e){
-  for(let t of e.changedTouches){
-    if(t.identifier===joyTouch){
-      joyTouch=null; moveX=0; moveY=0; stick.style.transform='';
-      base.style.left='18px'; base.style.bottom='18px'; base.style.top='auto';
-    }
-    if(t.identifier===lookTouch) lookTouch=null;
-  }
-}
-stageEl.addEventListener('touchstart',onTouchStart,{passive:true});
-stageEl.addEventListener('touchmove',onTouchMove,{passive:false});
-stageEl.addEventListener('touchend',onTouchEnd);
-stageEl.addEventListener('touchcancel',onTouchEnd);
+function init(){
+ scene=new THREE.Scene(); scene.background=new THREE.Color(0x050505); scene.fog=new THREE.Fog(0x000000,0.5,18);
+ camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,100);
+ renderer=new THREE.WebGLRenderer({canvas:document.getElementById('game'),antialias:true});
+ renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true;
 
-async function startNow(){started=true;document.getElementById('start').style.display='none';document.getElementById('controls').style.display='block';document.getElementById('rotateNotice').style.display='none';try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();}catch(e){}try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape');}catch(e){}if(innerWidth>900)renderer.domElement.requestPointerLock?.();msg('ادخل أوضة 1 على الشمال، وبعدين أوضة 2، والمفتاح في أوضة 3');}
-document.getElementById('startBtn').addEventListener('click',()=>{if(window.innerHeight>window.innerWidth){document.getElementById('rotateNotice').style.display='flex';let c=setInterval(()=>{if(window.innerWidth>window.innerHeight){clearInterval(c);startNow();}},400);return;}startNow();});
-function isBlocked(x,z){
- if(x<-7.6||x>7.6||z<-13.5||z>13.5)return true;
- if(Math.abs(x+4)<.7&&z>0&&z<10&&!(z>3&&z<9))return true;
- if(Math.abs(x-4)<.7&&z>-6&&z<4&&!(z>-5&&z<1))return true;
- if(Math.abs(z+10)<.7&&x>-8&&x<8&&!(x>-1.5&&x<1.5))return true;
- if(Math.abs(x+8)<.7||Math.abs(x-8)<.7||Math.abs(z-14)<.7||Math.abs(z+14)<.7)return true;
- if(Math.hypot(x+6.2,z-2)<1.2)return true;
- if(Math.hypot(x-6,z)<1)return true;
- return false;
-}
-const clock=new THREE.Clock();
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);
- if(started&&!ended){
-  const f=(keys.KeyW?1:0)+(keys.KeyS?-1:0)-moveY;
-  const s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+moveX;
-  const sp=(run||keys.ShiftLeft?4.2:2.4)*dt;
-  const dx=(-Math.sin(yaw)*f+Math.cos(yaw)*s)*sp;
-  const dz=(-Math.cos(yaw)*f-Math.sin(yaw)*s)*sp;
-  const nx=camera.position.x+dx,nz=camera.position.z+dz;
-  if(!isBlocked(nx,camera.position.z))camera.position.x=nx;
-  if(!isBlocked(camera.position.x,nz))camera.position.z=nz;
-  camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;
-  if(hasKey){const dxp=camera.position.x-monster.position.x,dzp=camera.position.z-monster.position.z;const d=Math.hypot(dxp,dzp);if(d>.01){monster.position.x+=(dxp/d)*dt*1.4;monster.position.z+=(dzp/d)*dt*1.4;}monster.lookAt(camera.position.x,1,camera.position.z);if(d<1.2)endGame(false);}
-  key.rotation.y+=dt*1.6;key.position.y=1.1+Math.sin(performance.now()*.002)*.1;
-  document.getElementById('status').textContent=`🔑 المفتاح: ${hasKey?'1/1':'0/1'} | الأوضة: ${roomName()}`;
+ // اضاءة
+ scene.add(new THREE.AmbientLight(0x222233,0.4));
+ // كشاف
+ flash=new THREE.SpotLight(0xfff2cc,1.8,22,0.5,0.4,1); flash.position.set(0,1.7,8); scene.add(flash); scene.add(flash.target);
+
+ // ارضية خشبية
+ let floorMat=new THREE.MeshStandardMaterial({color:0x4a3421,roughness:0.9});
+ let floor=new THREE.Mesh(new THREE.BoxGeometry(30,0.2,30),floorMat); floor.position.y=-0.1; scene.add(floor);
+ // سجادة حمرا في النص
+ let carpet=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.05,16),new THREE.MeshStandardMaterial({color:0x6a0a0a})); carpet.position.set(0,0.02,0); scene.add(carpet);
+
+ // وظيفة تعمل حيطة
+ function wall(w,h,d,x,y,z,color=0x2a2a2a,tex=null){
+   let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:color,roughness:0.95}));
+   m.position.set(x,y,z); scene.add(m); return m;
  }
+ // ممر رئيسي - حوائط جانبية
+ for(let z=-10;z<=10;z+=2){ wall(0.3,3.2,2,-4,1.6,z,0x3a4a3a); wall(0.3,3.2,2,4,1.6,z,0x3a4a3a); }
+ // اوضة نوم شمال
+ wall(6,3.2,0.3,-7,1.6,-2,0x2e2e3e); wall(6,3.2,0.3,-7,1.6,4,0x2e2e3e); wall(0.3,3.2,6,-10,1.6,1,0x2e2e3e);
+ // سرير
+ let bed=new THREE.Mesh(new THREE.BoxGeometry(2,0.6,3),new THREE.MeshStandardMaterial({color:0x5a4a35})); bed.position.set(-7,0.4,1); scene.add(bed);
+ let pillow=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.25,0.6),new THREE.MeshStandardMaterial({color:0xdddddd})); pillow.position.set(-7,0.8,-0.2); scene.add(pillow);
+ // دولاب
+ let wardrobe=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.4,0.8),new THREE.MeshStandardMaterial({color:0x3a2515})); wardrobe.position.set(-9,1.2,-1.5); scene.add(wardrobe);
+ // اوضة تانية يمين - مطبخ
+ wall(6,3.2,0.3,7,1.6,-2,0x333333); wall(6,3.2,0.3,7,1.6,4,0x333333); wall(0.3,3.2,6,10,1.6,1,0x333333);
+ let table=new THREE.Mesh(new THREE.BoxGeometry(2.2,0.1,1.2),new THREE.MeshStandardMaterial({color:0x6b4a2a})); table.position.set(7,0.9,1); scene.add(table);
+
+ // ابواب
+ function makeDoor(x,z,rot,label){
+   let g=new THREE.Group(); let d=new THREE.Mesh(new THREE.BoxGeometry(1.4,2.6,0.15),new THREE.MeshStandardMaterial({color:0x5a3a1a}));
+   d.position.set(x,1.3,z); d.rotation.y=rot; g.add(d); scene.add(g); doors.push({mesh:d,x,z,open:false,label}); return d;
+ }
+ makeDoor(-4, -2, 0, "BEDROOM");
+ makeDoor(4, 2, 0, "KITCHEN");
+ makeDoor(0, -10, 0, "EXIT - مقفول 🔒");
+
+ // مفاتيح دهبي - بتلمع
+ function makeKey(x,z){
+   let g=new THREE.Group();
+   let ring=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.05,8,20),new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xffaa00,emissiveIntensity:0.8,metalness:0.9}));
+   let stem=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.45,0.07),new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xffaa00,emissiveIntensity:0.6}));
+   stem.position.y=-0.35; g.add(ring); g.add(stem);
+   let light=new THREE.PointLight(0xffd700,0.9,4); g.add(light);
+   g.position.set(x,1.1,z); scene.add(g); keys.push({group:g,x,z,taken:false});
+ }
+ makeKey(-7,1); makeKey(7,1); makeKey(0,-6);
+
+ // شموع
+ for(let i=0;i<6;i++){ let c=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.35),new THREE.MeshStandardMaterial({color:0xffffff})); c.position.set(-3.5,0.8,-8+i*3); scene.add(c); let l=new THREE.PointLight(0xff6600,0.6,4); l.position.set(-3.5,1.2,-8+i*3); scene.add(l); }
+
+ // الوحش - اسود بعيون صفرا زي الصورة
+ let mMat=new THREE.MeshStandardMaterial({color:0x050505,roughness:0.2});
+ monster=new THREE.Group();
+ let mBody=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.6,1.8,8),mMat); mBody.position.y=1.2; monster.add(mBody);
+ let mHead=new THREE.Mesh(new THREE.SphereGeometry(0.35,10,10),mMat); mHead.position.y=2.3; monster.add(mHead);
+ let eyeMat=new THREE.MeshBasicMaterial({color:0xffff00});
+ let e1=new THREE.Mesh(new THREE.SphereGeometry(0.05,8,8),eyeMat); e1.position.set(-0.12,2.35,0.32); monster.add(e1);
+ let e2=e1.clone(); e2.position.x=0.12; monster.add(e2);
+ monster.position.set(0,0,-8); scene.add(monster);
+
+ // صورة على الحيطة
+ let pic=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.6),new THREE.MeshStandardMaterial({color:0x111111})); pic.position.set(-3.8,1.8,0); pic.rotation.y=Math.PI/2; scene.add(pic);
+
+ camera.position.set(player.x,player.y,player.z);
+ animate();
+}
+
+function animate(){
+ requestAnimationFrame(animate);
+ if(!gameStarted) return;
+ let dt=Math.min(clock.getDelta(),0.05); time+=dt;
+ // حركة
+ let speed=player.speed*(running?1.9:1);
+ let sin=Math.sin(lookX),cos=Math.cos(lookX);
+ let mx=(move.x+joy.x)*speed*dt, mz=(move.z+joy.y)*speed*dt;
+ player.x+= -sin*mz + cos*mx; player.z+= -cos*mz - sin*mx;
+ // حدود
+ player.x=Math.max(-9.5,Math.min(9.5,player.x)); player.z=Math.max(-9.5,Math.min(9.5,player.z));
+ camera.position.set(player.x,player.y+Math.sin(time*8)*0.02,player.z);
+ camera.rotation.order='YXZ'; camera.rotation.y=lookX; camera.rotation.x=lookY;
+ // كشاف
+ flash.position.copy(camera.position);
+ let dir=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+ flash.target.position.copy(camera.position).add(dir.multiplyScalar(5));
+ flash.visible=flashOn;
+ // بطارية بتنقص
+ if(flashOn){ player.bat=Math.max(0,player.bat-dt*0.6); if(player.bat<10) showMsg("🔦 البطارية هتخلص!"); }
+ // ستامينا
+ if(running) player.st=Math.max(0,player.st-dt*8); else player.st=Math.min(100,player.st+dt*5);
+ // مفاتيح بتدور وتلمع
+ keys.forEach(k=>{ if(!k.taken){ k.group.rotation.y+=dt*2; k.group.position.y=1.1+Math.sin(time*2+k.x)*0.15;
+   let d=Math.hypot(player.x-k.x,player.z-k.z); if(d<1.2){ k.taken=true; k.group.visible=false; player.keys++; document.getElementById('keyCount').textContent=player.keys; showMsg("🔑 لقيت مفتاح دهبي! فاضل "+(3-player.keys)); if(player.keys===3){ document.getElementById('objTxt').textContent="اهرب للباب الرئيسي في آخر الممر!"; } } } });
+ // وحش بيجري وراك
+ let md=Math.hypot(player.x-monster.position.x,player.z-monster.position.z);
+ if(md>0.8){ let dx=(player.x-monster.position.x)/md, dz=(player.z-monster.position.z)/md; monster.position.x+=dx*monsterSpeed*dt; monster.position.z+=dz*monsterSpeed*dt; monster.lookAt(player.x,1.5,player.z); monster.position.y=Math.sin(time*6)*0.05; }
+ if(md<1.5 && !scare){ scare=true; player.hp-=18; document.getElementById('blood').style.opacity=1; setTimeout(()=>document.getElementById('blood').style.opacity=0,600); showMsg("💀 الوحش مسكك! اهرب بسرعة!"); setTimeout(()=>scare=false,1500); if(player.hp<=0){ alert("💀 موتت! جرب تاني يا بطل"); location.reload(); } }
+ // تحديث HUD
+ document.getElementById('hpTxt').textContent=player.hp+"/100"; document.getElementById('hpFill').style.width=player.hp+"%";
+ document.getElementById('stTxt').textContent=Math.floor(player.st)+"%"; document.getElementById('stFill').style.width=player.st+"%";
+ document.getElementById('batTxt').textContent=Math.floor(player.bat)+"%"; document.getElementById('batFill').style.width=player.bat+"%";
+ let m=Math.floor(time/60), s=Math.floor(time%60); document.getElementById('timer').textContent=(m<10?'0'+m:m)+":"+(s<10?'0'+s:s);
+ document.getElementById('loc').textContent = player.x<-4?"BEDROOM":player.x>4?"KITCHEN":"WEST WING";
+ // باب الخروج
+ if(Math.hypot(player.x-0,player.z+10)<1.5){ if(player.keys>=3){ showMsg("🎉 هربت! انت ملك اللعبة 👑"); setTimeout(()=>{alert("🏆 كسبت! HELL OF ALMOZAG"); location.reload();},800); } else { showMsg("🔒 الباب مقفول! محتاج "+(3-player.keys)+" مفاتيح"); } }
+ // زر تفاعل
+ let near=keys.some(k=>!k.taken && Math.hypot(player.x-k.x,player.z-k.z)<2);
+ document.getElementById('interact').style.display=near?"block":"none";
  renderer.render(scene,camera);
-}animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
+}
+
+// تحكم كمبيوتر
+document.addEventListener('keydown',e=>{
+ if(e.key==='w'||e.key==='W'||e.key==='ArrowUp') move.z=-1;
+ if(e.key==='s'||e.key==='S'||e.key==='ArrowDown') move.z=1;
+ if(e.key==='a'||e.key==='A'||e.key==='ArrowLeft') move.x=-1;
+ if(e.key==='d'||e.key==='D'||e.key==='ArrowRight') move.x=1;
+ if(e.key==='Shift') running=true;
+ if(e.key==='f'||e.key==='F') flashOn=!flashOn;
+});
+document.addEventListener('keyup',e=>{
+ if(e.key==='w'||e.key==='W'||e.key==='ArrowUp') move.z=0;
+ if(e.key==='s'||e.key==='S'||e.key==='ArrowDown') move.z=0;
+ if(e.key==='a'||e.key==='A'||e.key==='ArrowLeft') move.x=0;
+ if(e.key==='d'||e.key==='D'||e.key==='ArrowRight') move.x=0;
+ if(e.key==='Shift') running=false;
+});
+document.addEventListener('mousemove',e=>{ if(!gameStarted) return; lookX-=e.movementX*0.0025; lookY-=e.movementY*0.0025; lookY=Math.max(-1,Math.min(1,lookY)); });
+document.body.addEventListener('click',()=>{ if(gameStarted) document.body.requestPointerLock?.(); });
+
+// تحكم موبايل - سحب للنظر
+document.addEventListener('touchstart',e=>{ if(e.target.closest('#joy')||e.target.closest('.btn')) return; lastTouch=e.touches[0]; },{passive:true});
+document.addEventListener('touchmove',e=>{ if(!lastTouch||e.target.closest('#joy')) return; let t=e.touches[0]; lookX-=(t.clientX-lastTouch.clientX)*0.005; lookY-=(t.clientY-lastTouch.clientY)*0.005; lookY=Math.max(-1,Math.min(1,lookY)); lastTouch=t; },{passive:true});
+document.addEventListener('touchend',()=>lastTouch=null);
+// جويستيك
+let joyEl=document.getElementById('joy'),knob=document.getElementById('knob');
+joyEl.addEventListener('touchstart',e=>{ joy.active=true; },{passive:true});
+joyEl.addEventListener('touchmove',e=>{ if(!joy.active) return; let r=joyEl.getBoundingClientRect(); let t=e.touches[0]; let dx=(t.clientX-(r.left+r.width/2))/40, dy=(t.clientY-(r.top+r.height/2))/40; dx=Math.max(-1,Math.min(1,dx)); dy=Math.max(-1,Math.min(1,dy)); joy.x=dx; joy.y=dy; knob.style.transform=`translate(calc(-50% + ${dx*25}px),calc(-50% + ${dy*25}px))`; },{passive:true});
+joyEl.addEventListener('touchend',()=>{ joy.x=0; joy.y=0; joy.active=false; knob.style.transform='translate(-50%,-50%)'; });
+// ازرار
+document.getElementById('btnFlash').onclick=()=>flashOn=!flashOn;
+document.getElementById('btnRun').ontouchstart=()=>running=true; document.getElementById('btnRun').ontouchend=()=>running=false;
+document.getElementById('btnRun').onclick=()=>running=!running;
+document.getElementById('btnAct').onclick=()=>showMsg("✋ بتدور هنا... كمل تدوير");
+document.getElementById('btnJump').onclick=()=>{ player.y=2.2; setTimeout(()=>player.y=1.7,250); };
+
+document.getElementById('startBtn').onclick=()=>{
+ document.getElementById('menu').style.display='none'; gameStarted=true; init();
+ showMsg("👻 اهلا بيك في HELL OF ALMOZAG<br>دور على 3 مفاتيح دهبي",3000);
+ // صوت رعب بسيط
+ try{ let a=new (window.AudioContext||window.webkitAudioContext)(); let o=a.createOscillator(); o.frequency.value=55; o.connect(a.destination); o.start(); o.stop(a.currentTime+1); }catch(e){}
+};
+window.addEventListener('resize',()=>{ if(!renderer) return; camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 </script>
 </body>
 </html>
